@@ -16,4 +16,4 @@ Before running the bot make sure that you've copied `config/config-example.json`
 When running the bot for the first time, run `-setup` in the server where the bot is in.
 
 ### Support
-Please email at rakinar2@onesoftnet.ml.
+Please email at rakinar2@onesoftnet.eu.org.
