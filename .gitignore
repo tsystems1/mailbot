@@ -1,6 +1,6 @@
 .env
 node_modules/
 src/commands/test/
-database/
 .vscode/
 .idea/
+config/config.json

@@ -17,7 +17,7 @@ export default class DiscordClient extends Client {
             .then(() => console.log('Database connected'))
             .catch(console.error);
         
-        this.config = JSON.parse(readFileSync(path.resolve(__dirname, '..', '..', 'database', 'config.json')).toString());
+        this.config = JSON.parse(readFileSync(path.resolve(__dirname, '..', '..', 'config', 'config.json')).toString());
     }
 
     async database(uri: string) {
