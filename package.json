@@ -4,8 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
     "discord.js": "^14.1.2",
     "dotenv": "^16.0.1",
+    "husky": "^8.0.1",
     "mongoose": "^6.5.0"
   },
   "devDependencies": {
@@ -16,6 +19,7 @@
   "scripts": {
     "dev": "nodemon ./src/index.ts",
     "start": "node ./build/index.js",
-    "build": "tsc"
+    "build": "tsc",
+    "prepare": "husky install"
   }
 }
