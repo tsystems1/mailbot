@@ -1,5 +1,4 @@
 .env
-slappey.json
 node_modules/
 src/commands/test/
 database/

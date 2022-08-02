@@ -18,7 +18,7 @@ export default class MessageCreateEvent extends BaseEvent {
             return;
         }
         
-        if (message.content.startsWith(client.prefix)) {
+        if (message.content.startsWith(client.config.prefix)) {
             const [cmdName, ...cmdArgs] = message.content
                 .slice(client.prefix.length)
                 .trim()
