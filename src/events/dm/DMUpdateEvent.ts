@@ -3,7 +3,7 @@ import DiscordClient from "../../client/Client";
 import Client from "../../client/Client";
 import Thread from "../../models/Thread";
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { formatSize, getChannel, mailCategory } from "../../utils/util";
+import { embed, formatSize, getChannel, loggingChannel, mailCategory } from "../../utils/util";
 
 export default class DMUpdateEvent extends BaseEvent {
     constructor() {
@@ -33,6 +33,50 @@ export default class DMUpdateEvent extends BaseEvent {
                     description: `**===Before===**\n${oldMessage.content}\n\n**+++===After===**\n${newMessage.content}`,
                     footer: {
                         text: `Updated • ${newMessage.id}`
+                    },
+                    color: 0x007bff
+                })
+                .setTimestamp()
+            ]
+        });
+
+        loggingChannel(client).send(embed(new EmbedBuilder({
+            author: {
+                name: newMessage.author.tag,
+                iconURL: newMessage.author.displayAvatarURL()
+            },
+            description: `**===Before===**\n${oldMessage.content}\n\n**+++===After===**\n${newMessage.content}`,
+            fields: [
+                {
+                    name: 'User ID',
+                    value: newMessage.author.id
+                },
+                {
+                    name: 'Thread ID',
+                    value: thread.id
+                },
+                {
+                    name: 'Channel ID',
+                    value: channel!.id
+                },
+                {
+                    name: 'Message ID',
+                    value: newMessage.id
+                }
+            ],
+            footer: {
+                text: `Updated`
+            },
+            color: 0x007bff
+        }).setTimestamp()));
+        
+        await newMessage.reply({
+            embeds: [
+                new EmbedBuilder({
+                    description: 'Message updated successfully!',
+                    color: 0x007bff,
+                    footer: {
+                        text: 'Updated'
                     }
                 })
                 .setTimestamp()

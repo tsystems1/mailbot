@@ -24,5 +24,5 @@ const client = new DiscordClient({
     await registerCommands(client, '../commands');
     await registerEvents(client, '../events');
     await client.login(process.env.TOKEN);
-})();
+})().catch(console.error);
 

@@ -1,11 +1,15 @@
-import { CategoryChannel, GuildChannel } from "discord.js";
+import { CategoryChannel, EmbedBuilder, GuildChannel, TextChannel } from "discord.js";
 import DiscordClient from "../client/Client";
 
-export async function mailCategory(client: DiscordClient) {
+export function mailCategory(client: DiscordClient) {
     return <CategoryChannel> client.guilds.cache.get(process.env.GUILD_ID!)!.channels.cache.get(client.config.mail_category);
 }
 
-export async function getChannel(client: DiscordClient, id: string) {
+export function loggingChannel(client: DiscordClient) {
+    return <TextChannel> client.guilds.cache.get(process.env.GUILD_ID!)!.channels.cache.get(client.config.logging_channel);
+}
+
+export function getChannel(client: DiscordClient, id: string) {
     return <GuildChannel | undefined> client.guilds.cache.get(process.env.GUILD_ID!)!.channels.cache.get(id);
 }
 
@@ -31,4 +35,10 @@ export function formatSize(size: number) {
 
 export function getGuild(client: DiscordClient) {
     return client.guilds.cache.get(process.env.GUILD_ID!);
+}
+
+export function embed(...embeds: EmbedBuilder[]) {
+    return {
+        embeds
+    };
 }

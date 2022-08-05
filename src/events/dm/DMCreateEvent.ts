@@ -3,7 +3,7 @@ import DiscordClient from "../../client/Client";
 import Client from "../../client/Client";
 import Thread from "../../models/Thread";
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { formatSize, getChannel, mailCategory } from "../../utils/util";
+import { embed, formatSize, getChannel, loggingChannel, mailCategory } from "../../utils/util";
 
 export async function createThread(client: DiscordClient, name: string, createdBy: User) {
     const parent = await mailCategory(client);
@@ -19,6 +19,32 @@ export async function createThread(client: DiscordClient, name: string, createdB
         createdAt: new Date(),
         updatedAt: new Date(),
     });
+
+    loggingChannel(client).send(embed(new EmbedBuilder({
+        author: {
+            name: createdBy.tag,
+            iconURL: createdBy.displayAvatarURL()
+        },
+        description: 'A new thread was created. ' + channel!.toString(),
+        fields: [
+            {
+                name: 'User ID',
+                value: createdBy.id
+            },
+            {
+                name: 'Thread ID',
+                value: thread.id
+            },
+            {
+                name: 'Channel ID',
+                value: channel!.id
+            }
+        ],
+        footer: {
+            text: `Created`
+        },
+        color: 0x007bff
+    }).setTimestamp()));
 
     return { channel, thread };
 }
@@ -47,11 +73,25 @@ export default class DMCreateEvent extends BaseEvent {
                         thumbnail: {
                             url: message.author.displayAvatarURL(),
                         },
-                        description: `${message.author} created a new thread conversation. You can reply to it below using \`r\` or \`a\` command.`,
+                        description: `${message.author} created a new thread conversation. You can reply to it below using \`r\` or \`a\` command.\nThe thread ID is \`${thread.id}\`.`,
                         footer: {
                             text: `Created • ${message.author.id}`
                         },
                         color: 0x007bff
+                    })
+                    .setTimestamp()
+                ]
+            });
+
+            await message.reply({
+                embeds: [
+                    new EmbedBuilder({
+                        title: 'Thread Created',
+                        description: 'Thanks for using MailBot! One of the staff team members will get you in touch soon!\nIf you have any further messages to send, DM again!',
+                        color: 0x007bff,
+                        footer: {
+                            text: 'Created'
+                        }
                     })
                     .setTimestamp()
                 ]
@@ -103,11 +143,48 @@ export default class DMCreateEvent extends BaseEvent {
                 ...media
             ],
         });
+            
+        await (loggingChannel(client).send(embed(new EmbedBuilder({
+            author: {
+                name: message.author.tag,
+                iconURL: message.author.displayAvatarURL()
+            },
+            description: message.content,
+            fields: [
+                {
+                    name: 'User ID',
+                    value: message.author.id
+                },
+                {
+                    name: 'Thread ID',
+                    value: thread.id
+                },
+                {
+                    name: 'Channel ID',
+                    value: channel!.id
+                },
+                {
+                    name: 'Message ID',
+                    value: message.id
+                }
+            ],
+            footer: {
+                text: `Received`
+            },
+            color: 0x007bff
+        }).setTimestamp(), ...media)));
 
+        
         if (files.length > 0) {
             await channel.send({
                 files
             });
+
+            await (loggingChannel(client).send({
+                files
+            }));
         }
+
+        await message.react('☑');
     }
 }
