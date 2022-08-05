@@ -30,7 +30,7 @@ export default class DMCreateEvent extends BaseEvent {
 
     async run(client: Client, message: Message) {
         let thread = await Thread.findOne({ user: message.author.id });
-        let channel: TextChannel;
+        let channel: TextChannel | undefined;
         
         if (!thread) {
             const { channel: newChannel, thread: newThread } = await createThread(client, message.author.tag.replace('#', '-'), message.author);
@@ -49,7 +49,7 @@ export default class DMCreateEvent extends BaseEvent {
                         },
                         description: `${message.author} created a new thread conversation. You can reply to it below using \`r\` or \`a\` command.`,
                         footer: {
-                            text: `Created`
+                            text: `Created • ${message.author.id}`
                         },
                         color: 0x007bff
                     })
@@ -59,6 +59,10 @@ export default class DMCreateEvent extends BaseEvent {
         }
         else {
             channel = <TextChannel> await getChannel(client, thread.channel);
+        }
+
+        if (!channel) {
+            return;
         }
 
         const media: EmbedBuilder[] = [];
@@ -92,7 +96,7 @@ export default class DMCreateEvent extends BaseEvent {
                     color: 0x007bff,
                     description: message.content,
                     footer: {
-                        text: `Received`
+                        text: `Received • ${message.id}`
                     },
                 })
                 .setTimestamp(),

@@ -11,8 +11,6 @@ export default class MessageCreateEvent extends BaseEvent {
         if (message.author.bot) 
             return;
 
-        console.log('Hello world');
-
         if (message.channel.type === ChannelType.DM || !message.guild) {
             client.emit('dmCreate', message);
             return;

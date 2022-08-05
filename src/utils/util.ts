@@ -6,7 +6,7 @@ export async function mailCategory(client: DiscordClient) {
 }
 
 export async function getChannel(client: DiscordClient, id: string) {
-    return <GuildChannel> client.guilds.cache.get(process.env.GUILD_ID!)!.channels.cache.get(id);
+    return <GuildChannel | undefined> client.guilds.cache.get(process.env.GUILD_ID!)!.channels.cache.get(id);
 }
 
 export function formatSize(size: number) {
