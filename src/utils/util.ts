@@ -28,3 +28,7 @@ export function formatSize(size: number) {
 
     return newSize.toFixed(2) + unit;
 }
+
+export function getGuild(client: DiscordClient) {
+    return client.guilds.cache.get(process.env.GUILD_ID!);
+}
