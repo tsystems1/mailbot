@@ -32,6 +32,8 @@ export async function closeThread(client: DiscordClient, channel: string, closed
         console.log(e);
     }
 
+    console.log(reason ?? '*No reason provided*');
+
     await (loggingChannel(client).send({
         embeds: [
             new EmbedBuilder({
@@ -57,6 +59,10 @@ export async function closeThread(client: DiscordClient, channel: string, closed
                         name: 'Closed By',
                         value: closedBy.tag + ` (${closedBy.id})`
                     },
+                    {
+                        name: 'Reason',
+                        value: `${reason ?? '*No reason provided*'}`
+                    },
                 ],
                 footer: {
                     text: `Closed`
@@ -81,6 +87,12 @@ export async function closeThread(client: DiscordClient, channel: string, closed
                             },
                             color: 0xf14a60,
                             description: 'Thanks for contacting us using MailBot! If you have any further questions or issues, feel free to DM again!',
+                            fields: reason ? [
+                                {
+                                    name: 'Reason',
+                                    value: reason
+                                }
+                            ] : [],
                             footer: {
                                 text: 'Closed',
                                 iconURL: getGuild(client)!.iconURL() ?? undefined
@@ -112,15 +124,17 @@ export default class CloseCommand extends BaseCommand {
 
         if (message instanceof CommandInteraction && message.isChatInputCommand()) {
             reason = message.options.getString('reason');
+            await message.deferReply();
         }
         else if (options) {
-            reason = options.rawArgs.filter(a => a[0] !== '-').join(' ');
+            reason = options.rawArgs.filter(a => a[0] !== '-').join(' ').trim();
+            reason = reason === '' ? null : reason;
         }
 
         const thread = await closeThread(client, message.channel!.id, message.member!.user as User, options?.options['-d'] !== undefined || options?.options['--delete'] !== undefined || ((message instanceof ChatInputCommandInteraction && message.options.getBoolean('delete')) ?? false), true, reason);
 
         if (!thread) {
-            await message.reply({
+            await this.deferedReply(message, {
                 embeds: [
                     {
                         description: ':x: This thread is already closed.',
@@ -133,11 +147,17 @@ export default class CloseCommand extends BaseCommand {
         }
 
         try {
-            await message.reply({
+            await this.deferedReply(message, {
                 embeds: [
                     new EmbedBuilder({
                         description: 'The thread has been closed.',
                         color: 0x007bff,
+                        fields: reason ? [
+                            {
+                                name: 'Reason',
+                                value: reason
+                            }
+                        ] : [],
                         footer: {
                             text: thread.id + ''
                         }

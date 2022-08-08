@@ -22,7 +22,8 @@ export default class DeleteCommand extends BaseCommand {
             await message.deferReply();
         }
         else if (options) {
-            reason = options.rawArgs.filter(a => a[0] !== '-').join(' ');
+            reason = options.rawArgs.filter(a => a[0] !== '-').join(' ').trim();
+            reason = reason === '' ? null : reason;
         }
 
         const { channel } = message;
@@ -46,6 +47,10 @@ export default class DeleteCommand extends BaseCommand {
                             {
                                 name: 'Deleted by',
                                 value: (message.member?.user as User).tag + ` (${(message.member?.user as User).id})`
+                            },
+                            {
+                                name: 'Reason',
+                                value: `${reason ?? '*No reason provided*'}`
                             },
                         ],
                         footer: {
