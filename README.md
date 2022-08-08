@@ -13,7 +13,7 @@ This bot was specially made for [The Everything Server](https://discord.gg/x7DHf
 
 ## Setup
 Before running the bot make sure that you've copied `config/config-sample.json` to `config/config.json`!
-When running the bot for the first time, run `-setup` in the server where the bot is in.
+<!-- When running the bot for the first time, run `-setup` in the server where the bot is in. -->
 
 ### Support
 Please email at rakinar2@onesoftnet.eu.org.
