@@ -17,15 +17,41 @@ export default class MessageCreateEvent extends BaseEvent {
         }
         
         if (message.content.startsWith(client.config.prefix)) {
-            const [cmdName, ...cmdArgs] = message.content
+            const rawArgv = message.content
                 .slice(client.prefix.length)
                 .trim()
-                .split(/\s+/);
+                .split(/ +/);
+            const [cmdName, ...cmdArgs] = rawArgv;
 
             const command = client.commands.get(cmdName);
             
             if (command) {
-                command.run(client, message, cmdArgs);
+                const options: { [key: string]: string } = {};
+                const args: string[] = [];
+
+                let i = 0;
+
+                for await (let a of cmdArgs) {
+                    if (!a.startsWith('-')) {
+                        if (typeof options[a] === 'undefined') {
+                            args.push(a);
+                        }
+
+                        i++;
+
+                        continue;
+                    }
+
+                    options[a] = cmdArgs[i + 1] ?? null;
+                    i++;
+                }
+
+                command.execute(client, message, {
+                    rawArgv,
+                    rawArgs: cmdArgs,
+                    args,
+                    options,
+                });
             }
         }
     }

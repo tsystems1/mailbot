@@ -5,11 +5,19 @@ import mongoose from 'mongoose';
 import { readFileSync } from 'fs';
 import path from 'path';
 
+export interface Config {
+    prefix: string;
+    logging_channel: string;
+    mail_category: string;
+    max_files: number;
+    role: string;
+}
+
 export default class DiscordClient extends Client {
     private _commands = new Collection<string, BaseCommand>();
     private _events = new Collection<string, BaseEvent>();
     private _prefix: string = '!';
-    config: { [key: string]: any } = {};
+    config: Config;
     
     constructor(options: ClientOptions) {
         super(options);
@@ -17,7 +25,7 @@ export default class DiscordClient extends Client {
             .then(() => console.log('Database connected'))
             .catch(console.error);
         
-        this.config = JSON.parse(readFileSync(path.resolve(__dirname, '..', '..', 'config', 'config.json')).toString());
+        this.config = <Config> JSON.parse(readFileSync(path.resolve(__dirname, '..', '..', 'config', 'config.json')).toString());
     }
 
     async database(uri: string) {

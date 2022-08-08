@@ -3,7 +3,7 @@ import DiscordClient from "../../client/Client";
 import Client from "../../client/Client";
 import Thread from "../../models/Thread";
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { embed, formatSize, getChannel, loggingChannel, mailCategory } from "../../utils/util";
+import { embed, formatSize, getChannel, getGuild, loggingChannel, mailCategory } from "../../utils/util";
 
 export async function createThread(client: DiscordClient, name: string, createdBy: User) {
     const parent = await mailCategory(client);
@@ -86,11 +86,15 @@ export default class DMCreateEvent extends BaseEvent {
             await message.reply({
                 embeds: [
                     new EmbedBuilder({
-                        title: 'Thread Created',
+                        author: {
+                            name: 'Thread Created',
+                            iconURL: client.user?.displayAvatarURL()
+                        },
                         description: 'Thanks for using MailBot! One of the staff team members will get you in touch soon!\nIf you have any further messages to send, DM again!',
                         color: 0x007bff,
                         footer: {
-                            text: 'Created'
+                            text: 'Created',
+                            iconURL: getGuild(client)!.iconURL() ?? undefined
                         }
                     })
                     .setTimestamp()
