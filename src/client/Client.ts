@@ -4,6 +4,7 @@ import BaseCommand from '../utils/structures/BaseCommand';
 import mongoose from 'mongoose';
 import { readFileSync } from 'fs';
 import path from 'path';
+import Server from '../api/core/server';
 
 export interface Config {
     prefix: string;
@@ -18,6 +19,10 @@ export default class DiscordClient extends Client {
     private _events = new Collection<string, BaseEvent>();
     private _prefix: string = '!';
     config: Config;
+
+    server: Server;
+
+    public static client: DiscordClient;
     
     constructor(options: ClientOptions) {
         super(options);
@@ -26,6 +31,11 @@ export default class DiscordClient extends Client {
             .catch(console.error);
         
         this.config = <Config> JSON.parse(readFileSync(path.resolve(__dirname, '..', '..', 'config', 'config.json')).toString());
+        this.server = new Server(this);
+
+        this.server.run();
+
+        DiscordClient.client = this;
     }
 
     async database(uri: string) {
