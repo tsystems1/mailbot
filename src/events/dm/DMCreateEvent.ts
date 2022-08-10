@@ -5,25 +5,50 @@ import Thread from "../../models/Thread";
 import BaseEvent from "../../utils/structures/BaseEvent";
 import { embed, formatSize, getChannel, getGuild, loggingChannel, mailCategory } from "../../utils/util";
 
-export async function createThread(client: DiscordClient, name: string, createdBy: User) {
+export async function createThread(client: DiscordClient, name: string | null, user: User, createdBy: User = user) {
     const parent = await mailCategory(client);
+
+    if (!name) {
+        name = user.tag.replace('#', '-');
+    }
+
     const channel = await client.guilds.cache.get(process.env.GUILD_ID!)?.channels.create({
         name,
         parent,
     });
 
     const thread = await Thread.create({
-        user: createdBy.id,
+        user: user.id,
         channel: channel!.id,
         createdBy: createdBy.id,
         createdAt: new Date(),
         updatedAt: new Date(),
     });
 
+    await channel?.send({
+        embeds: [
+            new EmbedBuilder({
+                author: {
+                    name: user.tag,
+                    iconURL: user.displayAvatarURL(),
+                },
+                thumbnail: {
+                    url: user.displayAvatarURL(),
+                },
+                description: `${createdBy} created a new thread conversation. You can reply to it below using \`r\` or \`a\` command.\nThe thread ID is \`${thread.id}\`.`,
+                footer: {
+                    text: `Created • ${user.id}`
+                },
+                color: 0x007bff
+            })
+            .setTimestamp()
+        ]
+    });
+
     loggingChannel(client).send(embed(new EmbedBuilder({
         author: {
-            name: createdBy.tag,
-            iconURL: createdBy.displayAvatarURL()
+            name: user.tag,
+            iconURL: user.displayAvatarURL()
         },
         description: 'A new thread was created. ' + channel!.toString(),
         fields: [
@@ -62,26 +87,6 @@ export default class DMCreateEvent extends BaseEvent {
             const { channel: newChannel, thread: newThread } = await createThread(client, message.author.tag.replace('#', '-'), message.author);
             thread = newThread!;
             channel = newChannel!;
-
-            await channel.send({
-                embeds: [
-                    new EmbedBuilder({
-                        author: {
-                            name: message.author.tag,
-                            iconURL: message.author.displayAvatarURL(),
-                        },
-                        thumbnail: {
-                            url: message.author.displayAvatarURL(),
-                        },
-                        description: `${message.author} created a new thread conversation. You can reply to it below using \`r\` or \`a\` command.\nThe thread ID is \`${thread.id}\`.`,
-                        footer: {
-                            text: `Created • ${message.author.id}`
-                        },
-                        color: 0x007bff
-                    })
-                    .setTimestamp()
-                ]
-            });
 
             await message.reply({
                 embeds: [

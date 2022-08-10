@@ -4,3 +4,4 @@ src/commands/test/
 .vscode/
 .idea/
 config/config.json
+src/server.ts

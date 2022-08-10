@@ -4,7 +4,7 @@ import path from "path";
 import DiscordClient from "../../client/Client";
 import { HTTPMethods } from "../../types/HTTPMethods";
 import Controller from "../../utils/structures/Controller";
-import Server from "./server";
+import Server from "./Server";
 import { Router as ExpressRouter } from 'express';
 
 export type RouterMap = {

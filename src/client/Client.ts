@@ -4,7 +4,7 @@ import BaseCommand from '../utils/structures/BaseCommand';
 import mongoose from 'mongoose';
 import { readFileSync } from 'fs';
 import path from 'path';
-import Server from '../api/core/server';
+import Server from '../api/core/Server';
 
 export interface Config {
     prefix: string;
@@ -26,6 +26,7 @@ export default class DiscordClient extends Client {
     
     constructor(options: ClientOptions) {
         super(options);
+        DiscordClient.client = this;
         this.database(process.env.MONGO_URI!)
             .then(() => console.log('Database connected'))
             .catch(console.error);
@@ -34,8 +35,6 @@ export default class DiscordClient extends Client {
         this.server = new Server(this);
 
         this.server.run();
-
-        DiscordClient.client = this;
     }
 
     async database(uri: string) {

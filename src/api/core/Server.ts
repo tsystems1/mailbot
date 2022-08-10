@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import DiscordClient from '../../client/Client';
-import Router from './router';
+import Router from './Router';
 
 export default class Server {
     router: Router;

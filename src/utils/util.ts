@@ -37,6 +37,10 @@ export function getGuild(client: DiscordClient) {
     return client.guilds.cache.get(process.env.GUILD_ID!);
 }
 
+export function client() {
+    return DiscordClient.client;
+}
+
 export function embed(...embeds: EmbedBuilder[]) {
     return {
         embeds

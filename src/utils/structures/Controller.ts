@@ -5,13 +5,18 @@ import Response from "./Response";
 
 export default abstract class Controller {
     constructor(protected client: DiscordClient) {}
+    middleware(): { [action: string]: Function[] } {
+        return {};
+    }
 }
 
 export function Action(method: HTTPMethods, route: string) {
     return (target: Controller, key: string) => {
         DiscordClient.client.server.router.routes[method].set(route, [target, key]);
-        (DiscordClient.client.server.router.expressRouter[method.toLowerCase() as keyof Router] as Function)(route, async (...args: any) => {
-            const result = await (target[key as keyof Controller] as Function)(...args);
+        const middleware = target.middleware()[key] ?? [];
+
+        (DiscordClient.client.server.router.expressRouter[method.toLowerCase() as keyof Router] as Function)(route, ...middleware, async (...args: any) => {
+            const result = await (target[key as keyof Controller] as Function).call(target, ...args);
 
             if (result && args[1]) {
                 if (result instanceof Response) {
