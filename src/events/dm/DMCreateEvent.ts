@@ -143,7 +143,7 @@ export default class DMCreateEvent extends BaseEvent {
                         iconURL: message.author.displayAvatarURL(),
                     },
                     color: 0x007bff,
-                    description: message.content,
+                    description: (message.content ?? '').trim() === '' ? '*No content*' : message.content,
                     footer: {
                         text: `Received • ${message.id}`
                     },
