@@ -17,7 +17,13 @@ const slashCommands = [
         .setName('delete')
         .setDescription('Deletes a mail thread channel (also closes if not closed)')
         .addStringOption(opt => opt.setName('reason').setDescription('The reason for deleting this thread'))
-        .addBooleanOption(opt => opt.setName('silent').setDescription('Close silently without DMing the user'))
+        .addBooleanOption(opt => opt.setName('silent').setDescription('Close silently without DMing the user')),
+    new SlashCommandBuilder()
+        .setName('reply')
+        .setDescription('Replies to a mail thread (DMs the thread author)')
+        .addStringOption(opt => opt.setName('message').setDescription('The message to send').setRequired(true))
+        .addBooleanOption(opt => opt.setName('anonymous').setDescription('Anonymous reply (Defaults to false)'))
+        .addAttachmentOption(opt => opt.setName('attachment').setDescription('Attachment to send'))
 ];
 
 const contextMenuCommands = [];
