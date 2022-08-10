@@ -43,7 +43,7 @@ export default class ThreadController extends Controller {
         }
 
         try {
-            return await Thread.findOne({ _id: request.params.id });
+            return await Thread.findById(request.params.id);
         }
         catch (e) {
             console.log(e);
