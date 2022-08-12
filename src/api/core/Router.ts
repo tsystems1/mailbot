@@ -6,6 +6,7 @@ import { HTTPMethods } from "../../types/HTTPMethods";
 import Controller from "../../utils/structures/Controller";
 import Server from "./Server";
 import { Router as ExpressRouter } from 'express';
+import GlobalMiddleware from "../middleware/GlobalMiddleware";
 
 export type RouterMap = {
     [key in HTTPMethods]: Collection<string, [Controller, string]>;
@@ -20,10 +21,16 @@ export default class Router {
         DELETE: new Collection(),
     };
 
+    globalMiddleware = [ GlobalMiddleware ];
+
     controllers: Controller[] = [];
     expressRouter: ExpressRouter = ExpressRouter();
 
-    constructor(protected client: DiscordClient, protected server: Server) {}
+    constructor(protected client: DiscordClient, protected server: Server) {
+        this.expressRouter.options('*', ...this.globalMiddleware, (req, res) => {
+            res.status(200).send(undefined);
+        });
+    }
 
     public async loadRoutesFromController(filePath: string) {
         const { default: Controller } = await import(filePath);

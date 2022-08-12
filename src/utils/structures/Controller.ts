@@ -1,6 +1,7 @@
 import express, { Router } from "express";
 import DiscordClient from "../../client/Client";
 import { HTTPMethods } from "../../types/HTTPMethods";
+import { client } from "../util";
 import Response from "./Response";
 
 export default abstract class Controller {
@@ -13,7 +14,7 @@ export default abstract class Controller {
 export function Action(method: HTTPMethods, route: string) {
     return (target: Controller, key: string) => {
         DiscordClient.client.server.router.routes[method].set(route, [target, key]);
-        const middleware = target.middleware()[key] ?? [];
+        const middleware = [...(target.middleware()['*'] ?? []), ...(target.middleware()[key] ?? []), ...(client().server.router.globalMiddleware)];
 
         (DiscordClient.client.server.router.expressRouter[method.toLowerCase() as keyof Router] as Function)(route, ...middleware, async (...args: any) => {
             const result = await (target[key as keyof Controller] as Function).call(target, ...args);
