@@ -11,6 +11,7 @@ const slashCommands = [
     new SlashCommandBuilder()
         .setName('close')
         .setDescription('Closes a mail thread')
+        .addStringOption(opt => opt.setName('close_in').setDescription('Set the closing timeout for this thread'))
         .addStringOption(opt => opt.setName('reason').setDescription('The reason for closing this thread'))
         .addBooleanOption(opt => opt.setName('delete').setDescription('Delete the thread channel (default is: false)')),
     new SlashCommandBuilder()

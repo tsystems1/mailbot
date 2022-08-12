@@ -3,9 +3,18 @@ import BaseCommand from '../../utils/structures/BaseCommand';
 import DiscordClient from '../../client/Client';
 import CommandOptions from '../../types/CommandOptions';
 import Thread from '../../models/Thread';
-import { getChannel, getGuild, loggingChannel } from '../../utils/util';
+import { getChannel, getGuild, loggingChannel, stringToDate } from '../../utils/util';
+import split from 'split-string';
+import { setTimeout } from 'timers/promises';
 
-export async function closeThread(client: DiscordClient, channel: string, closedBy: User, del: boolean = false, dm: boolean = true, reason?: string | null) {
+export interface ThreadCloseOptions {
+    del?: boolean;
+    dm?: boolean;
+    reason?: string | null;
+    closeAfter?: number;
+}
+
+export async function closeThread(client: DiscordClient, channel: string, closedBy: User, { del = false, dm = true, reason = null }: ThreadCloseOptions) {
     const thread = await Thread.findOne({ channel });
 
     if (!thread) {
@@ -121,17 +130,106 @@ export default class CloseCommand extends BaseCommand {
 
     async run(client: DiscordClient, message: Message | CommandInteraction, options?: CommandOptions) {
         let reason: string | null = null;
+        let closeAfter: string | null = null;
+        let dm: boolean = true;
 
         if (message instanceof CommandInteraction && message.isChatInputCommand()) {
             reason = message.options.getString('reason');
+            closeAfter = message.options.getString('close_in');
             await message.deferReply();
         }
         else if (options) {
-            reason = options.rawArgs.filter(a => a[0] !== '-').join(' ').trim();
-            reason = reason === '' ? null : reason;
+            closeAfter = options.rawArgs.filter(a => a[0] !== '-d' && a[0] !== '--delete').join(' ').trim();
+            console.log(closeAfter);
+            closeAfter = closeAfter === '' ? null : closeAfter;
         }
 
-        const thread = await closeThread(client, message.channel!.id, message.member!.user as User, options?.options['-d'] !== undefined || options?.options['--delete'] !== undefined || ((message instanceof ChatInputCommandInteraction && message.options.getBoolean('delete')) ?? false), true, reason);
+        if (closeAfter) {
+            const splitted = split(closeAfter, {
+                brackets: true,
+                separator: ' ',
+                quotes: ['"', "'"],
+            });
+
+            dm = !splitted.includes('silently') || !splitted.includes('silent');
+
+            const seconds = stringToDate(closeAfter);
+            const msg = message instanceof ChatInputCommandInteraction ? await message.fetchReply() : message;
+
+            if (seconds) {
+                setTimeout(seconds * 1000).then(async () => {
+                    const thread = await closeThread(client, message.channel!.id, message.member!.user as User, {
+                        del:  options?.options['-d'] !== undefined || options?.options['--delete'] !== undefined || ((message instanceof ChatInputCommandInteraction && message.options.getBoolean('delete')) ?? false),
+                        dm,
+                        reason
+                    });
+
+                    if (!thread) {
+                        await msg.reply({
+                            embeds: [
+                                {
+                                    description: ':x: This thread is already closed.',
+                                    color: 0xf14a60
+                                }
+                            ]
+                        });
+            
+                        return;
+                    }
+
+                    try {
+                        await msg.reply({
+                            embeds: [
+                                new EmbedBuilder({
+                                    description: 'The thread has been closed.',
+                                    color: 0x007bff,
+                                    fields: reason ? [
+                                        {
+                                            name: 'Reason',
+                                            value: reason
+                                        }
+                                    ] : [],
+                                    footer: {
+                                        text: thread.id + ''
+                                    }
+                                })
+                                .setTimestamp()
+                            ]
+                        });
+                    }
+                    catch (e) {
+                        console.log(e);
+                    }
+                }).catch(console.log);
+
+                await this.deferedReply(message, {
+                    embeds: [
+                        new EmbedBuilder({
+                            description: 'The thread will be closed at ' + (new Date(Date.now() + seconds).toLocaleString()) + '.',
+                            color: 0x007bff,
+                            fields: reason ? [
+                                {
+                                    name: 'Reason',
+                                    value: reason
+                                }
+                            ] : [],
+                            footer: {
+                                text: 'Queued'
+                            }
+                        })
+                        .setTimestamp()
+                    ]
+                });
+
+                return;
+            }
+        }
+
+        const thread = await closeThread(client, message.channel!.id, message.member!.user as User, {
+            del:  options?.options['-d'] !== undefined || options?.options['--delete'] !== undefined || ((message instanceof ChatInputCommandInteraction && message.options.getBoolean('delete')) ?? false),
+            dm,
+            reason
+        });
 
         if (!thread) {
             await this.deferedReply(message, {

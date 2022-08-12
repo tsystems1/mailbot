@@ -28,7 +28,10 @@ export default class DeleteCommand extends BaseCommand {
 
         const { channel } = message;
 
-        await closeThread(client, message.channel!.id, message.member!.user as User, true, true, reason);
+        await closeThread(client, message.channel!.id, message.member!.user as User, {
+            dm: true,
+            reason,
+        });
 
         try {
             if ((channel as GuildChannel).parent?.id !== client.config.mail_category)
