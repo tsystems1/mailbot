@@ -1,6 +1,7 @@
 import { Attachment, AttachmentBuilder, EmbedBuilder, Message, TextChannel, User } from "discord.js";
 import DiscordClient from "../../client/Client";
 import Client from "../../client/Client";
+import BlockedUser from "../../models/BlockedUser";
 import Thread from "../../models/Thread";
 import BaseEvent from "../../utils/structures/BaseEvent";
 import { embed, formatSize, getChannel, getGuild, loggingChannel, mailCategory } from "../../utils/util";
@@ -80,6 +81,12 @@ export default class DMCreateEvent extends BaseEvent {
     }
 
     async run(client: Client, message: Message) {
+        const blockedUser = await BlockedUser.findOne({ discordID: message.author.id });
+
+        if (blockedUser) {
+            return;
+        }
+
         let thread = await Thread.findOne({ user: message.author.id });
         let channel: TextChannel | undefined;
         

@@ -1,6 +1,7 @@
 import { Attachment, AttachmentBuilder, EmbedBuilder, Message, TextChannel, User } from "discord.js";
 import DiscordClient from "../../client/Client";
 import Client from "../../client/Client";
+import BlockedUser from "../../models/BlockedUser";
 import Thread from "../../models/Thread";
 import BaseEvent from "../../utils/structures/BaseEvent";
 import { embed, formatSize, getChannel, loggingChannel, mailCategory } from "../../utils/util";
@@ -11,6 +12,12 @@ export default class DMUpdateEvent extends BaseEvent {
     }
 
     async run(client: Client, oldMessage: Message, newMessage: Message) {
+        const blockedUser = await BlockedUser.findOne({ discordID: newMessage.author.id });
+
+        if (blockedUser) {
+            return;
+        }
+
         let thread = await Thread.findOne({ user: newMessage.author.id });
         
         if (!thread) {

@@ -1,4 +1,4 @@
-import { CategoryChannel, EmbedBuilder, GuildChannel, TextChannel } from "discord.js";
+import { CategoryChannel, EmbedBuilder, GuildChannel, TextChannel, User } from "discord.js";
 import DiscordClient from "../client/Client";
 
 export function mailCategory(client: DiscordClient) {
@@ -11,6 +11,30 @@ export function loggingChannel(client: DiscordClient) {
 
 export function getChannel(client: DiscordClient, id: string) {
     return <GuildChannel | undefined> client.guilds.cache.get(process.env.GUILD_ID!)!.channels.cache.get(id);
+}
+
+export async function getUser(input: string) {
+    if (input.includes('#')) {
+        return getGuild(DiscordClient.client)?.members.cache.find(m => m.user.tag === input);
+    }
+    else if (input.startsWith('<@') && input.endsWith('>')) {
+        try {
+            return await getGuild(DiscordClient.client)?.members.fetch(input.substring(2, input.length - 1));
+        }
+        catch (e) {
+            console.log(e);
+            return undefined;
+        }
+    }
+    else {
+        try {
+            return await getGuild(DiscordClient.client)?.members.fetch(input);
+        }
+        catch (e) {
+            console.log(e);
+            return undefined;
+        }
+    }
 }
 
 export function stringToDate(str: string): number | undefined {
