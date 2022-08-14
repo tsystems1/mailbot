@@ -6,8 +6,13 @@ import Thread from "../../models/Thread";
 import Controller, { Action } from "../../utils/structures/Controller";
 import Response from "../../utils/structures/Response";
 import { client, getGuild } from "../../utils/util";
+import AuthMiddleware from "../middleware/AuthMiddleware";
 
 export default class ThreadController extends Controller {
+    middleware(): { [action: string]: Function[]; } {
+        return { "*": [AuthMiddleware] };
+    }
+
     @Action('GET', '/threads')
     async index() {
         return await Thread.find();
@@ -39,7 +44,7 @@ export default class ThreadController extends Controller {
     @Action('GET', '/threads/:id')
     async view(request: Request) {
         if (!isValidObjectId(request.params.id)) {
-            return { error: "Not a valid ID", code: 400 };
+            return new Response(400, { error: 'Not a valid ID' });
         }
 
         try {
@@ -47,7 +52,7 @@ export default class ThreadController extends Controller {
         }
         catch (e) {
             console.log(e);
-            return { error: "Not found", code: 404 };
+            return new Response(404, { error: 'Not found' });
         }
     }
 }

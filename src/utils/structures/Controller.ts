@@ -11,13 +11,14 @@ export default abstract class Controller {
     }
 }
 
-export function Action(method: HTTPMethods, route: string) {
+export function Action(method: HTTPMethods, route: string, middlewareList: Function[] = []) {
     return (target: Controller, key: string) => {
         DiscordClient.client.server.router.routes[method].set(route, [target, key]);
-        const middleware = [...(target.middleware()['*'] ?? []), ...(target.middleware()[key] ?? []), ...(client().server.router.globalMiddleware)];
+        const middleware = [...(client().server.router.globalMiddleware), ...middlewareList, ...(target.middleware()['*'] ?? []), ...(target.middleware()[key] ?? [])];
 
         (DiscordClient.client.server.router.expressRouter[method.toLowerCase() as keyof Router] as Function)(route, ...middleware, async (...args: any) => {
             const result = await (target[key as keyof Controller] as Function).call(target, ...args);
+            console.log(result, key);
 
             if (result && args[1]) {
                 if (result instanceof Response) {

@@ -4,14 +4,16 @@ import Response from "../../utils/structures/Response";
 import jsonwebtoken from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { Request } from "express";
+import AuthMiddleware from "../middleware/AuthMiddleware";
+import AuthenticatedRequest from "../../types/AuthenticatedRequest";
 
 export default class UserController extends Controller {
-    @Action('GET', '/users')
+    @Action('GET', '/users', [AuthMiddleware])
     async index() {
         return await User.find().select(['_id', 'username', 'discordID', 'createdAt']);
     }
 
-    @Action('POST', '/users')
+    @Action('POST', '/users', [AuthMiddleware])
     async create(req: Request) {
         if (typeof req.body !== 'object' || !req.body || !req.body.username || !req.body.password || !req.body.discordID) {
             return { error: "Required fields are missing" };
@@ -67,7 +69,7 @@ export default class UserController extends Controller {
         }
 
         try {
-            const data = jsonwebtoken.verify(user.token, process.env.JWT_TOKEN!);
+            const data = jsonwebtoken.verify(user.token!, process.env.JWT_TOKEN!);
             console.log(data);
         }
         catch (e) {
@@ -85,6 +87,29 @@ export default class UserController extends Controller {
             _id: user.id,
             username: user.username,
             token: user.token
+        };
+    }
+
+    @Action('POST', '/logout', [AuthMiddleware])
+    async logout(req: AuthenticatedRequest) {
+        const { token } = req.user;
+
+        try {
+            const data = jsonwebtoken.verify(token!, process.env.JWT_TOKEN!);
+            console.log(data);
+        }
+        catch (e) {
+            console.log("error", e);
+            return { error: 'Invalid access token, please log in again.' };
+        }
+
+        req.user.token = undefined;
+        await req.user.save();
+
+        return {
+            _id: req.user.id,
+            username: req.user.username,
+            message: 'Successfully logged out'
         };
     }
 }

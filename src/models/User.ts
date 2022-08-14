@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 export interface IUser extends mongoose.Document {
-    channel: string;
-    user: string;
-    createdBy: string;
+    username: string;
+    password: string;
+    token?: string;
+    discordID: string;
     createdAt: Date;
-    updatedAt: Date;
 }
 
 const schema = new mongoose.Schema({
@@ -20,7 +20,7 @@ const schema = new mongoose.Schema({
     },
     token: {
         type: String,
-        required: true,
+        required: false,
         unique: true
     },
     discordID: {
