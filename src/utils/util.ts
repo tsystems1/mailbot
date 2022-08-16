@@ -13,13 +13,23 @@ export function getChannel(client: DiscordClient, id: string) {
     return <GuildChannel | undefined> client.guilds.cache.get(process.env.GUILD_ID!)!.channels.cache.get(id);
 }
 
+export async function fetchUser(client: DiscordClient, id: string) {
+    try {
+        return await client.users.fetch(id);
+    }
+    catch (e) {
+        console.log(e);
+        return null;
+    }
+}
+
 export async function getUser(input: string) {
     if (input.includes('#')) {
         return getGuild(DiscordClient.client)?.members.cache.find(m => m.user.tag === input);
     }
     else if (input.startsWith('<@') && input.endsWith('>')) {
         try {
-            return await getGuild(DiscordClient.client)?.members.fetch(input.substring(2, input.length - 1));
+            return await getGuild(DiscordClient.client)?.members.fetch(input.substring(input.startsWith('<@!') ? 3 : 2, input.length - 1));
         }
         catch (e) {
             console.log(e);

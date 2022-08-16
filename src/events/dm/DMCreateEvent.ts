@@ -72,7 +72,7 @@ export async function createThread(client: DiscordClient, name: string | null, u
         color: 0x007bff
     }).setTimestamp()));
 
-    return { channel, thread };
+    return { channel, thread, createdBy, user };
 }
 
 export default class DMCreateEvent extends BaseEvent {

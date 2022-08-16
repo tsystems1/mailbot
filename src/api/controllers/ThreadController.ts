@@ -5,7 +5,7 @@ import { createThread } from "../../events/dm/DMCreateEvent";
 import Thread from "../../models/Thread";
 import Controller, { Action } from "../../utils/structures/Controller";
 import Response from "../../utils/structures/Response";
-import { client, getGuild } from "../../utils/util";
+import { client, fetchUser, getChannel, getGuild } from "../../utils/util";
 import AuthMiddleware from "../middleware/AuthMiddleware";
 
 export default class ThreadController extends Controller {
@@ -15,7 +15,19 @@ export default class ThreadController extends Controller {
 
     @Action('GET', '/threads')
     async index() {
-        return await Thread.find();
+        const threads = await Thread.find().limit(30);
+        const transformed = [];
+
+        for await (const thread of threads) {
+            transformed.push({
+                ...thread.toJSON(),
+                channel: getChannel(client(), thread.channel),
+                user: await fetchUser(client(), thread.user),
+                createdBy: await fetchUser(client(), thread.createdBy),
+            });
+        }
+
+        return transformed;
     }
 
     @Action('POST', '/threads')
@@ -48,7 +60,18 @@ export default class ThreadController extends Controller {
         }
 
         try {
-            return await Thread.findById(request.params.id);
+            const thread = await Thread.findById(request.params.id);
+
+            if (!thread) {
+                throw new Error('Not found');
+            }
+
+            return {
+                ...thread.toJSON(),
+                channel: getChannel(client(), thread.channel),
+                user: await fetchUser(client(), thread.user),
+                createdBy: await fetchUser(client(), thread.createdBy),
+            };
         }
         catch (e) {
             console.log(e);
