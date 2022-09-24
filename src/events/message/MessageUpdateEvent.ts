@@ -1,8 +1,8 @@
 import BaseEvent from '../../utils/structures/BaseEvent';
-import { Message } from 'discord.js';
+import { ChannelType, Message } from 'discord.js';
 import DiscordClient from '../../client/Client';
 
-export default class MessageUpdatedEvent extends BaseEvent {
+export default class MessageUpdateEvent extends BaseEvent {
     constructor() {
         super('messageUpdate');
     }
@@ -11,9 +11,8 @@ export default class MessageUpdatedEvent extends BaseEvent {
         if (newMessage.author.bot) 
             return;
 
-        if (!newMessage.guild || newMessage.channel.type === 'DM') {            
-            client.emit('DMUpdate', oldMessage, newMessage);
-            return;
+        if (newMessage.channel.type === ChannelType.DM || !newMessage.guild) {
+            client.emit('dmUpdate', oldMessage, newMessage);
         }
     }
 }

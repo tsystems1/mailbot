@@ -1,5 +1,5 @@
 import BaseEvent from '../../utils/structures/BaseEvent';
-import { Message } from 'discord.js';
+import { ChannelType, Message } from 'discord.js';
 import DiscordClient from '../../client/Client';
 
 export default class MessageCreateEvent extends BaseEvent {
@@ -11,29 +11,47 @@ export default class MessageCreateEvent extends BaseEvent {
         if (message.author.bot) 
             return;
 
-        if (!message.guild || message.channel.type === 'DM') {
-            client.emit('DMCreate', message);
+        if (message.channel.type === ChannelType.DM || !message.guild) {
+            client.emit('dmCreate', message);
             return;
         }
-
-        if (message.content.startsWith(client.config.get('prefix'))) {
-            const [cmdName, ...cmdArgs] = await message.content
+        
+        if (message.content.startsWith(client.config.prefix)) {
+            const rawArgv = message.content
                 .slice(client.prefix.length)
                 .trim()
                 .split(/ +/);
+            const [cmdName, ...cmdArgs] = rawArgv;
 
-            const command = await client.commands.get(cmdName);
-
+            const command = client.commands.get(cmdName);
+            
             if (command) {
-                if (command.optionParse) {
-                    const options = cmdArgs.filter(a => a[0] === '-');
-                    const normalArgs = cmdArgs.filter(a => a[0] !== '-');
-                    await command.run(client, message, cmdArgs, options, normalArgs);
+                const options: { [key: string]: string } = {};
+                const args: string[] = [];
 
-                    return;
+                let i = 0;
+
+                for await (let a of cmdArgs) {
+                    if (!a.startsWith('-')) {
+                        if (typeof options[a] === 'undefined') {
+                            args.push(a);
+                        }
+
+                        i++;
+
+                        continue;
+                    }
+
+                    options[a] = cmdArgs[i + 1] ?? null;
+                    i++;
                 }
 
-                await command.run(client, message, cmdArgs);
+                command.execute(client, message, {
+                    rawArgv,
+                    rawArgs: cmdArgs,
+                    args,
+                    options,
+                });
             }
         }
     }

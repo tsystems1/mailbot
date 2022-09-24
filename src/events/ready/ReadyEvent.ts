@@ -5,7 +5,7 @@ export default class ReadyEvent extends BaseEvent {
     constructor() {
         super('ready');
     }
-    async run(client: DiscordClient) {
-        console.log('The system has logged into discord!');
+    async run (client: DiscordClient) {
+        console.log('Bot has logged in.', client.server.router.routes);
     }
 }

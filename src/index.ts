@@ -1,29 +1,29 @@
+import 'reflect-metadata';
 import { registerCommands, registerEvents } from './utils/registry';
 import DiscordClient from './client/Client';
-import { Intents } from 'discord.js';
-import { config } from 'dotenv';
-import fs from 'fs';
-import path from 'path';
+import { IntentsBitField, Partials } from 'discord.js';
+import { config as loadConfig } from 'dotenv';
 
-if (fs.existsSync(path.join(__dirname, '..', '.env'))) {
-    config();
-}
+loadConfig();
 
-const client = new DiscordClient({
-    partials: ["CHANNEL"],
+const client = new DiscordClient({ 
     intents: [
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.DIRECT_MESSAGES, 
-        Intents.FLAGS.DIRECT_MESSAGE_TYPING
+        IntentsBitField.Flags.GuildMessages,
+        IntentsBitField.Flags.Guilds,
+        IntentsBitField.Flags.DirectMessages,
+        IntentsBitField.Flags.MessageContent,
+        IntentsBitField.Flags.GuildMembers,
+        IntentsBitField.Flags.DirectMessageReactions
+    ],
+    partials: [
+        Partials.Message,
+        Partials.Channel,
     ]
 });
 
 (async () => {
-    client.prefix = process.env.PREFIX || client.prefix;
-
     await registerCommands(client, '../commands');
     await registerEvents(client, '../events');
-
     await client.login(process.env.TOKEN);
-})();
+})().catch(console.error);
+

@@ -1,32 +1,36 @@
-import { model, Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const schema = new Schema({
+export interface IThread extends mongoose.Document {
+    channel: string;
+    user: string;
+    createdBy: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const schema = new mongoose.Schema({
     channel: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     user: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
-    created_by: {
+    createdBy: {
         type: String,
+        required: true,
+    },
+    createdAt: {
+        type: Date,
         required: true
     },
-    created_at: {
+    updatedAt: {
         type: Date,
-        required: true,
-        default() {
-            return new Date();
-        }
-    },
-    updated_at: {
-        type: Date,
-        required: true,
-        default() {
-            return new Date();
-        }
+        required: true
     }
 });
 
-export default model('Thread', schema);
+export default mongoose.model('Thread', schema);
