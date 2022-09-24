@@ -1,7 +1,7 @@
 {
   "name": "mailbot",
   "version": "3.2.1",
-  "main": "index.js",
+  "main": "build/index.js",
   "license": "Apache-2.0",
   "dependencies": {
     "@commitlint/cli": "^17.0.3",

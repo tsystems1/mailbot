@@ -1,4 +1,4 @@
-import { CommandInteraction, Guild, GuildChannel, GuildMember, InteractionDeferUpdateOptions, InteractionReplyOptions, Message, MessageOptions, MessagePayload, PermissionsBitField, Role, RoleResolvable } from 'discord.js';
+import { CommandInteraction, Guild, GuildChannel, GuildMember, InteractionDeferUpdateOptions, InteractionReplyOptions, Message, MessageReplyOptions, MessagePayload, PermissionsBitField, Role, RoleResolvable } from 'discord.js';
 import DiscordClient from '../../client/Client';
 import CommandOptions from '../../types/CommandOptions';
 
@@ -24,9 +24,9 @@ export default abstract class BaseCommand {
         return this.aliases;
     }
 
-    async deferedReply(msg: Message | CommandInteraction, options: MessageOptions | MessagePayload | InteractionReplyOptions) {
+    async deferedReply(msg: Message | CommandInteraction, options: MessageReplyOptions | MessagePayload | InteractionReplyOptions) {
         if (msg instanceof Message) 
-            await msg.reply(options as MessageOptions);
+            await msg.reply(options as MessageReplyOptions);
         else {
             if (msg.deferred) {
                 await msg.editReply(options as MessagePayload);

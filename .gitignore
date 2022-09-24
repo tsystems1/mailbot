@@ -5,3 +5,6 @@ src/commands/test/
 .idea/
 config/config.json
 src/server.ts
+.devcontainer/
+build/
+database/

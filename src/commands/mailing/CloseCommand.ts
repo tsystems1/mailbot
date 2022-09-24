@@ -248,7 +248,7 @@ export default class CloseCommand extends BaseCommand {
             await this.deferedReply(message, {
                 embeds: [
                     new EmbedBuilder({
-                        description: 'The thread has been closed.\n*MailBot will not delete the thread channel unless you specify the `-d` flag so that you won\'t lose the conversation.*',
+                        description: 'The thread has been closed.\n*MailBot will not delete the thread channel unless you specify the `-d` flag so that you won\'t lose the conversation. To delete the thread channel, run `' + client.config.prefix + 'delete`.*',
                         color: 0x007bff,
                         fields: reason ? [
                             {
