@@ -2,7 +2,7 @@
   "name": "mailbot",
   "version": "3.2.1",
   "main": "build/index.js",
-  "license": "Apache-2.0",
+  "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
