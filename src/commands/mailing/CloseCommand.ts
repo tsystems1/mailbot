@@ -3,7 +3,7 @@ import BaseCommand from '../../utils/structures/BaseCommand';
 import DiscordClient from '../../client/Client';
 import CommandOptions from '../../types/CommandOptions';
 import Thread from '../../models/Thread';
-import { getChannel, getGuild, loggingChannel, stringToDate } from '../../utils/util';
+import { getChannel, getGuild, loggingChannel, stringToDate } from '../../utils/utils';
 import split from 'split-string';
 import { setTimeout } from 'timers/promises';
 

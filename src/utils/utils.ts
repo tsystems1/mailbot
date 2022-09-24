@@ -1,13 +1,5 @@
-import { ChannelType, GuildChannel, CategoryChannel, EmbedBuilder, TextChannel, User } from "discord.js";
+import { CategoryChannel, EmbedBuilder, GuildChannel, TextChannel, User } from "discord.js";
 import DiscordClient from "../client/Client";
-
-export async function categoryChannel(client: DiscordClient) {
-    return client.guilds.cache.get(process.env.GUILD_ID!)?.channels.cache.find(c => c.id === client.config.mail_category && c.type === ChannelType.GuildCategory);
-}
-
-export async function getChannel(client: DiscordClient, id: string) {
-    return <GuildChannel | null> client.guilds.cache.get(process.env.GUILD_ID!)?.channels.cache.find(c => c.id === id);
-}
 
 export function mailCategory(client: DiscordClient) {
     return <CategoryChannel> client.guilds.cache.get(process.env.GUILD_ID!)!.channels.cache.get(client.config.mail_category);
@@ -17,9 +9,9 @@ export function loggingChannel(client: DiscordClient) {
     return <TextChannel> client.guilds.cache.get(process.env.GUILD_ID!)!.channels.cache.get(client.config.logging_channel);
 }
 
-// export function getChannel(client: DiscordClient, id: string) {
-//     return <GuildChannel | undefined> client.guilds.cache.get(process.env.GUILD_ID!)!.channels.cache.get(id);
-// }
+export function getChannel(client: DiscordClient, id: string) {
+    return <GuildChannel | undefined> client.guilds.cache.get(process.env.GUILD_ID!)!.channels.cache.get(id);
+}
 
 export async function fetchUser(client: DiscordClient, id: string) {
     try {

@@ -4,7 +4,7 @@ import Client from "../../client/Client";
 import BlockedUser from "../../models/BlockedUser";
 import CommandOptions from "../../types/CommandOptions";
 import BaseCommand from "../../utils/structures/BaseCommand";
-import { getUser } from "../../utils/util";
+import { getUser } from "../../utils/utils";
 
 export default class BlockCommand extends BaseCommand {
     constructor() {

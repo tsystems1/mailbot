@@ -3,7 +3,7 @@ import Client from "../../client/Client";
 import CommandOptions from "../../types/CommandOptions";
 import BaseCommand from "../../utils/structures/BaseCommand";
 import Thread, { IThread } from '../../models/Thread';
-import { formatSize, getChannel, getGuild, loggingChannel } from "../../utils/util";
+import { formatSize, getChannel, getGuild, loggingChannel } from "../../utils/utils";
 
 export interface ThreadReplyOptions {
     content: string;

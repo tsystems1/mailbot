@@ -4,7 +4,7 @@ import Client from "../../client/Client";
 import BlockedUser from "../../models/BlockedUser";
 import Thread from "../../models/Thread";
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { embed, formatSize, getChannel, loggingChannel, mailCategory } from "../../utils/util";
+import { embed, formatSize, getChannel, loggingChannel, mailCategory } from "../../utils/utils";
 
 export default class DMUpdateEvent extends BaseEvent {
     constructor() {

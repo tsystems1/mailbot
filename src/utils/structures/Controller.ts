@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import DiscordClient from "../../client/Client";
 import { HTTPMethods } from "../../types/HTTPMethods";
-import { client } from "../util";
+import { client } from "../utils";
 import Response from "./Response";
 
 export default abstract class Controller {

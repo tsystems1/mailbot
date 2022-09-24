@@ -5,7 +5,7 @@ import { createThread } from "../../events/dm/DMCreateEvent";
 import Thread from "../../models/Thread";
 import Controller, { Action } from "../../utils/structures/Controller";
 import Response from "../../utils/structures/Response";
-import { client, fetchUser, getChannel, getGuild } from "../../utils/util";
+import { client, fetchUser, getChannel, getGuild } from "../../utils/utils";
 import AuthMiddleware from "../middleware/AuthMiddleware";
 
 export default class ThreadController extends Controller {

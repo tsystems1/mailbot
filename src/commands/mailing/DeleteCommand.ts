@@ -3,7 +3,7 @@ import BaseCommand from '../../utils/structures/BaseCommand';
 import DiscordClient from '../../client/Client';
 import CommandOptions from '../../types/CommandOptions';
 import Thread from '../../models/Thread';
-import { getChannel, getGuild, loggingChannel } from '../../utils/util';
+import { getChannel, getGuild, loggingChannel } from '../../utils/utils';
 import { closeThread } from './CloseCommand';
 
 export default class DeleteCommand extends BaseCommand {

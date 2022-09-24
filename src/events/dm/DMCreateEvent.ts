@@ -4,7 +4,7 @@ import Client from "../../client/Client";
 import BlockedUser from "../../models/BlockedUser";
 import Thread from "../../models/Thread";
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { embed, formatSize, getChannel, getGuild, loggingChannel, mailCategory } from "../../utils/util";
+import { embed, formatSize, getChannel, getGuild, loggingChannel, mailCategory } from "../../utils/utils";
 
 export async function createThread(client: DiscordClient, name: string | null, user: User, createdBy: User = user) {
     const parent = await mailCategory(client);
