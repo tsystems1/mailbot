@@ -109,17 +109,16 @@ export default class DMUpdateEvent extends BaseEvent {
             color: 0x007bff
         }).setTimestamp()));
         
-        await newMessage.reply({
+        const message = await newMessage.reply({
             embeds: [
                 new EmbedBuilder({
                     description: 'Message updated successfully!',
                     color: 0x007bff,
-                    footer: {
-                        text: 'Updated'
-                    }
                 })
                 .setTimestamp()
             ]
         });
+
+        setTimeout(() => message.delete(), 7000);
     }
 }
