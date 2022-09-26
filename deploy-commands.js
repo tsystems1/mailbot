@@ -47,12 +47,21 @@ const slashCommands = [
         .setDescription('Edit a message sent by MailBot')
         .setDMPermission(false)
         .addStringOption(opt => opt.setName('message').setDescription('The ID of the message to edit').setRequired(true))
-        .addStringOption(opt => opt.setName('content').setDescription('The new content of the message').setRequired(true))
+        .addStringOption(opt => opt.setName('content').setDescription('The new content of the message').setRequired(true)),
+    new SlashCommandBuilder()
+        .setName('delmsg')
+        .setDescription('Delete a message sent by MailBot')
+        .setDMPermission(false)
+        .addStringOption(opt => opt.setName('message').setDescription('The ID of the message to delete').setRequired(true))
 ];
 
 const contextMenuCommands = [
     new ContextMenuCommandBuilder()
         .setName("Edit Thread Message")
+        .setDMPermission(false)
+        .setType(ApplicationCommandType.Message),
+    new ContextMenuCommandBuilder()
+        .setName("Delete Thread Message")
         .setDMPermission(false)
         .setType(ApplicationCommandType.Message)
 ];

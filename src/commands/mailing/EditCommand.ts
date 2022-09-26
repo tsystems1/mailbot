@@ -95,13 +95,18 @@ export async function updateReply(client: Client, thread: IThread, id: string, {
             },
             description: (content ?? '').trim() === '' ? '*No content*' : content,
             footer: { text: `${isAnonymous ? 'Anonymous' : 'Normal'} Reply (Updated) • ${message.id}` },
-            color: 0x007bff
+            color: 0x007bff,
+            fields: [
+                {
+                    name: 'Original Message',
+                    value: `[Jump](https://discord.com/channels/${getGuild(client)!.id}/${channel.id}/${id})`
+                }
+            ]
         }).setTimestamp();
 
         if (channel) {
             await channel.send({
                 embeds: [
-                    prevEmbed,
                     embed,
                 ]
             });
