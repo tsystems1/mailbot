@@ -39,7 +39,7 @@ const slashCommands = [
         .setName('reply')
         .setDescription('Replies to a mail thread (DMs the thread author)')
         .setDMPermission(false)
-        .addStringOption(opt => opt.setName('message').setDescription('The message to send').setRequired(true))
+        .addStringOption(opt => opt.setName('message').setDescription('The message to send'))
         .addBooleanOption(opt => opt.setName('anonymous').setDescription('Anonymous reply (Defaults to false)'))
         .addAttachmentOption(opt => opt.setName('attachment').setDescription('Attachment to send')),
     new SlashCommandBuilder()

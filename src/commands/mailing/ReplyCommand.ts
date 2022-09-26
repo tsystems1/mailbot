@@ -26,13 +26,13 @@ import { formatSize, getChannel, getGuild, loggingChannel } from "../../utils/ut
 import StaffMessage from "../../models/StaffMessage";
 
 export interface ThreadReplyOptions {
-    content: string;
+    content?: string;
     attachments?: Attachment[];
     author: User;
     isAnonymous?: boolean;
 }
 
-export async function replyToThread(client: Client, thread: IThread, { content, attachments = [], author, isAnonymous = false }: ThreadReplyOptions) {
+export async function replyToThread(client: Client, thread: IThread, { content = '*No content*', attachments = [], author, isAnonymous = false }: ThreadReplyOptions) {
     const channel = getChannel(client, thread!.channel) as TextChannel;
 
     try {
@@ -177,29 +177,31 @@ export default class ReplyCommand extends BaseCommand {
     }
 
     async run(client: Client, message: Message<boolean> | ChatInputCommandInteraction<CacheType>, options?: CommandOptions | undefined): Promise<void> {
-        if (options && options.args[0] === undefined) {
-            await message.reply({
+        let content: string | undefined = undefined, isAnonymous = false;
+
+        if (options) {
+            if (options.rawArgs.length > 0)
+                content = options.rawArgs.join(' ');
+            
+            isAnonymous = ['rta', 'ra', 'a'].includes(options.rawArgv[0]) ? true : isAnonymous;
+        }
+        else if (message instanceof CommandInteraction) {
+            content = message.options.getString('message') ?? undefined;
+            isAnonymous = message.options.getBoolean('anonymous')!;
+            await message.deferReply({ ephemeral: true });
+        }
+
+        if (((message instanceof CommandInteraction && !message.options.getAttachment('attachment')) || (message instanceof Message && message.attachments.size < 1)) && !content) {
+            await this.deferedReply(message, {
                 embeds: [
                     {
-                        description: ':x: You must specify a message to send.',
+                        description: ":x: You must provide either a message content or at least one attachment!",
                         color: 0xf14a60
                     }
                 ]
             });
 
             return;
-        }
-
-        let content = '', isAnonymous = false;
-
-        if (options) {
-            content = options.rawArgs.join(' ');
-            isAnonymous = ['rta', 'ra', 'a'].includes(options.rawArgv[0]) ? true : isAnonymous;
-        }
-        else if (message instanceof CommandInteraction) {
-            content = message.options.getString('message')!;
-            isAnonymous = message.options.getBoolean('anonymous')!;
-            await message.deferReply({ ephemeral: true });
         }
 
         const thread = await Thread.findOne({ channel: message.channel!.id });
