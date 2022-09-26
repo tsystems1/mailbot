@@ -1,10 +1,10 @@
-import { Message, CommandInteraction, CacheType, User, EmbedBuilder, ChatInputCommandInteraction, TextChannel, MessageContextMenuCommandInteraction, Colors, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } from "discord.js";
+import { Message, CommandInteraction, CacheType, User, EmbedBuilder, ChatInputCommandInteraction, TextChannel, MessageContextMenuCommandInteraction, Colors, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, Attachment } from "discord.js";
 import DiscordClient from "../../client/Client";
 import Client from "../../client/Client";
 import CommandOptions from "../../types/CommandOptions";
 import BaseCommand from "../../utils/structures/BaseCommand";
 import StaffMessage from '../../models/StaffMessage';
-import { getChannel, getGuild, loggingChannel } from "../../utils/utils";
+import { formatSize, getChannel, getGuild, loggingChannel } from "../../utils/utils";
 import Thread, { IThread } from "../../models/Thread";
 
 export async function deleteThreadMessage(client: DiscordClient, thread: IThread, id: string, author: User) {
@@ -30,6 +30,8 @@ export async function deleteThreadMessage(client: DiscordClient, thread: IThread
         }
 
         try {
+            let fileMessage: Message | undefined;
+
             if (!user.dmChannel) {
                 console.log('Reloading DM channel...');
 
@@ -71,7 +73,24 @@ export async function deleteThreadMessage(client: DiscordClient, thread: IThread
                 });
             }
 
-            loggingChannel(client).send({
+            const { embeds } = message;
+
+            embeds.shift();
+
+            if (staffMessage!.fileMessage) {
+                try {
+                    fileMessage = await user.dmChannel!.messages.fetch(staffMessage!.fileMessage);
+
+                    if (!fileMessage || !fileMessage.attachments?.size) {
+                        fileMessage = undefined;
+                    }
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            }
+
+            await (loggingChannel(client).send({
                 embeds: [
                     new EmbedBuilder({
                         author: author ? {
@@ -109,10 +128,19 @@ export async function deleteThreadMessage(client: DiscordClient, thread: IThread
                     })
                     .setTimestamp(),
                     embed,
+                    ...embeds
                 ]
-            });
+            }));
+
+            if (fileMessage) {
+                await (loggingChannel(client).send({
+                    files: fileMessage.attachments.toJSON()
+                }));
+            }
 
             await message.delete();
+            await fileMessage?.delete();
+
             await staffMessage.delete();
         }
         catch (e) {
@@ -235,7 +263,7 @@ export default class DeleteThreadMessageCommand extends BaseCommand {
             message.channel?.awaitMessageComponent({
                 componentType: ComponentType.Button,
                 dispose: true,
-                time: 60_000,
+                time: 60_000,   
                 filter: i => i.customId.startsWith(actionButtonPrefix) && i.member?.user.id === message.member?.user.id
             })
             .then(async interaction => {
