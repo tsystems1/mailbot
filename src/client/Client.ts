@@ -33,7 +33,7 @@ export interface Config {
     role: string;
 }
 
-export default class DiscordClient extends Client {
+export default class DiscordClient extends Client<true> {
     private _commands = new Collection<string, BaseCommand>();
     private _events = new Collection<string, BaseEvent>();
     private _prefix: string = '!';
