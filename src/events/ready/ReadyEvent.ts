@@ -19,12 +19,24 @@
 
 import BaseEvent from '../../utils/structures/BaseEvent';
 import DiscordClient from '../../client/Client';
+import { ActivityType } from 'discord.js';
 
 export default class ReadyEvent extends BaseEvent {
     constructor() {
         super('ready');
     }
-    async run (client: DiscordClient) {
+    async run(client: DiscordClient) {
         console.log('Bot has logged in.', client.server.router.routes);
+        
+        await client.user.presence.set({
+            status: 'online',
+            activities: [
+                {
+                    name: 'DM me to contact staff!',
+                    type: ActivityType.Playing,
+                    url: 'https://github.com/onesoft-sudo/mailbot'
+                }
+            ]
+        })
     }
 }
