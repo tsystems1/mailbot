@@ -1,6 +1,6 @@
 {
     "name": "mailbot",
-    "version": "3.2.1",
+    "version": "4.0.0",
     "main": "build/index.js",
     "description": "A Discord Bot for private communication with server staff",
     "homepage": "https://github.com/virtual-designer/mailbot",
