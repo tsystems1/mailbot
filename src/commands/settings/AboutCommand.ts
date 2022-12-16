@@ -24,7 +24,6 @@ import BaseCommand from "../../utils/structures/BaseCommand";
 
 export default class AboutCommand extends BaseCommand {
     metadata = require('../../../package.json');
-    mailOnly = true;
     requireModRole = true;
     
     constructor() {
