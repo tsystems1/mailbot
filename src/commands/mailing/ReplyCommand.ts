@@ -171,6 +171,7 @@ export async function replyToThread(client: Client, thread: IThread, { content =
 
 export default class ReplyCommand extends BaseCommand {
     public mailOnly: boolean = true;
+    requireModRole = true;
 
     constructor() {
         super('reply', 'mailing', ['rt', 'r', 'rta', 'a', 'ra']);

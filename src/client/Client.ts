@@ -36,7 +36,6 @@ export interface Config {
 export default class DiscordClient extends Client<true> {
     private _commands = new Collection<string, BaseCommand>();
     private _events = new Collection<string, BaseEvent>();
-    private _prefix: string = '!';
     config: Config;
 
     server: Server;
@@ -69,10 +68,10 @@ export default class DiscordClient extends Client<true> {
     }
     
     get prefix(): string { 
-        return this._prefix;
+        return this.config.prefix;
     }
 
     set prefix(prefix: string) {
-        this._prefix = prefix;
+        this.config.prefix = prefix;
     }
 }

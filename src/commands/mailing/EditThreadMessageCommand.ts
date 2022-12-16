@@ -30,6 +30,7 @@ export default class EditThreadMessageCommand extends BaseCommand {
     public mailOnly: boolean = true;
     public messageContextMenu: boolean = true;
     public legacy: boolean = false;
+    requireModRole = true;
 
     constructor() {
         super('Edit Thread Message', 'mailing', []);

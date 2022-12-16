@@ -176,6 +176,8 @@ export async function deleteThreadMessage(client: DiscordClient, thread: IThread
 }
 
 export default class DeleteThreadMessageCommand extends BaseCommand {
+    mailOnly = true;
+    requireModRole = true;
     public messageContextMenu: boolean = true;
     
     constructor() {

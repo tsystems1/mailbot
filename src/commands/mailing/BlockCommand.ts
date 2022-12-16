@@ -26,6 +26,8 @@ import BaseCommand from "../../utils/structures/BaseCommand";
 import { getGuild, getUser, loggingChannel } from "../../utils/utils";
 
 export default class BlockCommand extends BaseCommand {
+    requireModRole = true;
+    
     constructor() {
         super('block', 'mailing', ['blk']);
     }

@@ -25,6 +25,8 @@ import BaseCommand from "../../utils/structures/BaseCommand";
 import { getGuild, getUser, loggingChannel } from "../../utils/utils";
 
 export default class UnblockCommand extends BaseCommand {
+    requireModRole = true;
+    
     constructor() {
         super('unblock', 'mailing', ['unblk']);
     }

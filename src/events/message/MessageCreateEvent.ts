@@ -70,6 +70,7 @@ export default class MessageCreateEvent extends BaseEvent {
                     rawArgs: cmdArgs,
                     args,
                     options,
+                    commandName: cmdName
                 });
             }
         }

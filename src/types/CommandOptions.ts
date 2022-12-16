@@ -23,5 +23,6 @@ export default interface CommandOptions {
     args: string[];
     options: {
         [option: string]: string;
-    }
+    },
+    commandName: string;
 }

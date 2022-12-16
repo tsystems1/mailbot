@@ -28,6 +28,11 @@ const rest = new REST({
 
 const slashCommands = [
     new SlashCommandBuilder()
+        .setName('help')
+        .setDescription('Get help about the bot commands')
+        .setDMPermission(false)
+        .addStringOption(opt => opt.setName('command_name').setDescription('Get information about a specific command')),
+    new SlashCommandBuilder()
         .setName('close')
         .setDescription('Closes a mail thread')
         .setDMPermission(false)
@@ -71,7 +76,21 @@ const slashCommands = [
         .setName('delmsg')
         .setDescription('Delete a message sent by MailBot')
         .setDMPermission(false)
-        .addStringOption(opt => opt.setName('message').setDescription('The ID of the message to delete').setRequired(true))
+        .addStringOption(opt => opt.setName('message').setDescription('The ID of the message to delete').setRequired(true)),
+    new SlashCommandBuilder()
+        .setName('thread')
+        .setDescription('Create a new thread conversation')
+        .setDMPermission(false)
+        .addUserOption(opt => opt.setName('member').setDescription('The thread will be created for the given member').setRequired(true))
+        .addStringOption(opt => opt.setName('initial_message').setDescription('Send a message to the member afyer thread creation'))
+        .addBooleanOption(opt => opt.setName('anonymous').setDescription('Specify that the message should be anonymous; default is True')),
+    new SlashCommandBuilder()
+        .setName('send')
+        .setDescription('Send a message to a member; the system will create a thread if required')
+        .setDMPermission(false)
+        .addUserOption(opt => opt.setName('member').setDescription('The message will be sent to the given member').setRequired(true))
+        .addStringOption(opt => opt.setName('message').setDescription('The message content').setRequired(true))
+        .addBooleanOption(opt => opt.setName('anonymous').setDescription('Specify that the message should be anonymous; default is True'))
 ];
 
 const contextMenuCommands = [
@@ -87,6 +106,6 @@ const contextMenuCommands = [
 
 const commands = [...slashCommands, ...contextMenuCommands].map(cmd => cmd.toJSON());
 
-rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID), { body: commands })
-    .then(() => console.log('Successfully registered application guild commands.'))
+rest.put(Routes[process.argv.includes('--guild') ? 'applicationGuildCommands' : 'applicationCommands'](process.env.CLIENT_ID, process.env.GUILD_ID), { body: commands })
+    .then(() => console.log('Successfully registered application' + [process.argv.includes('--guild') ? ' guild' : ''] + ' commands.'))
     .catch(console.error);

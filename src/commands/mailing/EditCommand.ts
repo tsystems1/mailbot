@@ -182,6 +182,7 @@ export async function updateReply(client: Client, thread: IThread, id: string, {
 
 export default class EditCommand extends BaseCommand {   
     public mailOnly: boolean = true;
+    requireModRole = true;
 
     constructor() {
         super('edit', 'mailing', ['u', 'um', 'updatemsg', 'e', 'update', 'editmsg']);

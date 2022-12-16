@@ -26,6 +26,8 @@ import { formatDistance, formatDistanceToNowStrict, subDays } from 'date-fns';
 import Paginator from "../../utils/Paginator";
 
 export default class BlocklistCommand extends BaseCommand {
+    requireModRole = true;
+    
     constructor() {
         super('blocklist', 'mailing', ['blk']);
     }
