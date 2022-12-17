@@ -90,7 +90,13 @@ const slashCommands = [
         .setDMPermission(false)
         .addUserOption(opt => opt.setName('member').setDescription('The message will be sent to the given member').setRequired(true))
         .addStringOption(opt => opt.setName('message').setDescription('The message content').setRequired(true))
-        .addBooleanOption(opt => opt.setName('anonymous').setDescription('Specify that the message should be anonymous; default is True'))
+        .addBooleanOption(opt => opt.setName('anonymous').setDescription('Specify that the message should be anonymous; default is True')),
+    new SlashCommandBuilder()
+        .setName('echo')
+        .setDescription('Echo a message using the bot')
+        .setDMPermission(false)
+        .addStringOption(opt => opt.setName('content').setDescription('The message content').setRequired(true))
+        .addChannelOption(opt => opt.setName('channel').setDescription('Specify a channel where the message will be sent; defaults to current channel'))
 ];
 
 const contextMenuCommands = [
