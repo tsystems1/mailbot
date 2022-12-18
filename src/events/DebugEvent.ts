@@ -1,5 +1,5 @@
-import BaseEvent from "../../utils/structures/BaseEvent";
-import DiscordClient from "../../client/Client";
+import BaseEvent from "../utils/structures/BaseEvent";
+import DiscordClient from "../client/Client";
 import { exec } from "child_process";
 
 export default class DebugEvent extends BaseEvent {
