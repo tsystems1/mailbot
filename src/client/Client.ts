@@ -49,7 +49,7 @@ export default class DiscordClient extends Client<true> {
             .then(() => console.log('Database connected'))
             .catch(console.error);
         
-        this.config = <Config> JSON.parse(readFileSync(path.resolve(__dirname, '..', '..', 'config', 'config.json')).toString());
+        this.config = <Config> JSON.parse(readFileSync(path.resolve(__dirname, '..', '..', process.env.CONF_DIR ?? 'config', 'config.json')).toString());
         this.server = new Server(this);
 
         this.server.run();
