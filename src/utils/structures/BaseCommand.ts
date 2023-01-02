@@ -22,6 +22,7 @@ import DiscordClient from '../../client/Client';
 import CommandOptions from '../../types/CommandOptions';
 
 export default abstract class BaseCommand {
+    public readonly ownerOnly: boolean = false;
     public readonly mailOnly: boolean = false;
     public readonly legacy: boolean = true;
     public readonly interactions: boolean = true;
@@ -89,6 +90,19 @@ export default abstract class BaseCommand {
                     return;
                 }
             }
+        }
+        
+        if (this.ownerOnly && (message.member! as GuildMember).roles.cache.find(r => client.config.owners.includes(r.id))) {
+            await message.reply({
+                embeds: [
+                    {
+                        description: ':x: Only the bot owner(s) can run this command.',
+                        color: 0xf14a60
+                    }
+                ]
+            });
+
+            return;
         }
 
         if (this.permissions) {

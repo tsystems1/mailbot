@@ -31,6 +31,7 @@ export interface Config {
     mail_category: string;
     max_files: number;
     role: string;
+    owners: string[];
 }
 
 export default class DiscordClient extends Client<true> {
@@ -54,7 +55,7 @@ export default class DiscordClient extends Client<true> {
 
         this.server.run();
     }
-
+    
     async database(uri: string) {
         return await mongoose.connect(uri);
     }
