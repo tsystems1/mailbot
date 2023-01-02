@@ -49,6 +49,7 @@ export default class SystemCommand extends BaseCommand {
                     .setDescription('Loading data...')
                 ]
             });
+
             msg = <Message> await message.fetchReply();
         }
 
@@ -122,6 +123,6 @@ export default class SystemCommand extends BaseCommand {
         if (msg instanceof ChatInputCommandInteraction)
             msgoptions.content = '';
 
-        await this.deferedReply(msg, msgoptions);
+        await msg.edit(msgoptions);
     }
 }
