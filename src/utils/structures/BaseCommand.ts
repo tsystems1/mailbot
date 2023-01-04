@@ -76,7 +76,7 @@ export default abstract class BaseCommand {
                 member = await message.guild!.members.fetch(message.member!.user.id);
             }
 
-            for await (const role of [...this.roles, client.config.role]) {
+            for await (const role of this.roles) {
                 if (!member.roles.cache.has(role instanceof Role ? role.id : role)) {
                     await message.reply({
                         embeds: [
@@ -89,6 +89,21 @@ export default abstract class BaseCommand {
     
                     return;
                 }
+            }
+
+            if (!member.roles.cache.find(r => client.config.roles.includes(r.id))) {
+                console.log("Role issue");
+                
+                await message.reply({
+                    embeds: [
+                        {
+                            description: ':x: You don\'t have permission to run this command.',
+                            color: 0xf14a60
+                        }
+                    ]
+                });
+
+                return;
             }
         }
         

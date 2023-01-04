@@ -30,7 +30,7 @@ export interface Config {
     logging_channel: string;
     mail_category: string;
     max_files: number;
-    role: string;
+    roles: string[];
     owners: string[];
 }
 
