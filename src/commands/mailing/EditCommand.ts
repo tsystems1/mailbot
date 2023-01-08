@@ -29,7 +29,7 @@ export async function updateReply(client: Client, thread: IThread, id: string, {
     const channel = getChannel(client, thread!.channel) as TextChannel;
 
     try {
-        const user = await (getGuild(client)?.members.fetch(thread.user));
+        const user = await client.users.fetch(thread.user);
 
         if (!user) {
             return;
@@ -159,7 +159,7 @@ export async function updateReply(client: Client, thread: IThread, id: string, {
                         },
                         {
                             name: 'Sent to',
-                            value: user!.user.tag + ` (${user!.user.id})`
+                            value: user!.tag + ` (${user!.id})`
                         },
                     ],
                     footer: {

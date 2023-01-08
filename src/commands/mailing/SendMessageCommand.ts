@@ -4,7 +4,7 @@ import { createThread } from "../../events/dm/DMCreateEvent";
 import Thread from "../../models/Thread";
 import CommandOptions from "../../types/CommandOptions";
 import BaseCommand from "../../utils/structures/BaseCommand";
-import { getUser } from "../../utils/utils";
+import { getGlobalUser, getUser } from "../../utils/utils";
 import { replyToThread } from './ReplyCommand';
 
 export default class SendMessageCommand extends BaseCommand {
@@ -20,9 +20,9 @@ export default class SendMessageCommand extends BaseCommand {
             return;
         }
 
-        const member = message instanceof CommandInteraction ? message.options.getMember('member') as GuildMember : (await getUser(options!.args[0]));
+        const user = message instanceof CommandInteraction ? message.options.getUser('user') as User : (await getGlobalUser(options!.args[0]));
 
-        if (!member) {
+        if (!user) {
             await message.reply(`:x: That user could not be found or is not a member of this server.`);
             return;
         }
@@ -35,11 +35,11 @@ export default class SendMessageCommand extends BaseCommand {
             await message.deferReply();
 
         let thread = await Thread.findOne({
-            user: member.user.id,
+            user: user.id,
         });
 
         if (!thread) {
-            const { thread: newThread } = await createThread(client, null, member.user, message.member!.user as User);
+            const { thread: newThread } = await createThread(client, null, user, message.member!.user as User);
             thread = newThread;
         }
 
@@ -56,8 +56,8 @@ export default class SendMessageCommand extends BaseCommand {
             embeds: [
                 new EmbedBuilder({
                     author: {
-                        iconURL: member.user.displayAvatarURL(),
-                        name: member.user.tag
+                        iconURL: user.displayAvatarURL(),
+                        name: user.tag
                     },
                     color: 0x007bff,
                     description: `The message was sent.`,
@@ -72,7 +72,7 @@ export default class SendMessageCommand extends BaseCommand {
                         },
                         {
                             name: 'User ID',
-                            value: member.user.id
+                            value: user.id
                         },
                     ],
                     footer: {

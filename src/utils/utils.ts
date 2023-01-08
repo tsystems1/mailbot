@@ -66,6 +66,30 @@ export async function getUser(input: string) {
     }
 }
 
+export async function getGlobalUser(input: string) {
+    if (input.includes('#')) {
+        return DiscordClient.client!.users.cache.find(user => user.tag === input);
+    }
+    else if (input.startsWith('<@') && input.endsWith('>')) {
+        try {
+            return await DiscordClient.client!.users.fetch(input.substring(input.startsWith('<@!') ? 3 : 2, input.length - 1));
+        }
+        catch (e) {
+            console.log(e);
+            return undefined;
+        }
+    }
+    else {
+        try {
+            return await DiscordClient.client.users.fetch(input);
+        }
+        catch (e) {
+            console.log(e);
+            return undefined;
+        }
+    }
+}
+
 export function stringToDate(str: string): number | undefined {
     let dateString = str.match(/(\d+) ?(second|minute|hour|day|week|month|year|sec|min|hr|dy|wk|mo|yr|s|mo|m|h|d|w|y)s?/i);
 

@@ -60,9 +60,9 @@ export default class EditThreadMessageCommand extends BaseCommand {
         }
         
         try {
-            const member = await (getGuild(client)?.members.fetch(thread.user));
+            const user = await client.users.fetch(thread.user);
 
-            if (!member) {
+            if (!user) {
                 throw new Error();
             }
             
@@ -81,18 +81,18 @@ export default class EditThreadMessageCommand extends BaseCommand {
                 return;
             }
 
-            if (!member.dmChannel) {
+            if (!user.dmChannel) {
                 console.log('Reloading DM channel...');
 
                 try {
-                    await member.createDM(true);
+                    await user.createDM(true);
                 }
                 catch (e) {
                     console.log(e);
                 }
             }
 
-            const message = await member.dmChannel!.messages.fetch(staffMessage!.dmID);
+            const message = await user.dmChannel!.messages.fetch(staffMessage!.dmID);
 
             console.log(message);
 

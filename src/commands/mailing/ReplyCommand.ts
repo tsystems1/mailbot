@@ -36,7 +36,7 @@ export async function replyToThread(client: Client, thread: IThread, { content =
     const channel = getChannel(client, thread!.channel) as TextChannel;
 
     try {
-        const user = await (getGuild(client)?.members.fetch(thread.user));
+        const user = await client.users.fetch(thread.user);
 
         if (!user) {
             return;
@@ -67,7 +67,6 @@ export async function replyToThread(client: Client, thread: IThread, { content =
         let fileMessage: Message | undefined;
 
         try {
-
             message = await user!.send({
                 embeds: [
                     new EmbedBuilder({
@@ -144,7 +143,7 @@ export async function replyToThread(client: Client, thread: IThread, { content =
                         },
                         {
                             name: 'Sent to',
-                            value: user!.user.tag + ` (${user!.user.id})`
+                            value: user!.tag + ` (${user!.id})`
                         },
                     ],
                     footer: {

@@ -3,7 +3,7 @@ import Client from "../../client/Client";
 import { createThread } from "../../events/dm/DMCreateEvent";
 import CommandOptions from "../../types/CommandOptions";
 import BaseCommand from "../../utils/structures/BaseCommand";
-import { getUser } from "../../utils/utils";
+import { getGlobalUser, getUser } from "../../utils/utils";
 import { replyToThread } from './ReplyCommand';
 
 export default class CreateThreadCommand extends BaseCommand {
@@ -19,10 +19,10 @@ export default class CreateThreadCommand extends BaseCommand {
             return;
         }
 
-        const member = message instanceof CommandInteraction ? message.options.getMember('member') as GuildMember : (await getUser(options!.args[0]));
+        const user = message instanceof CommandInteraction ? message.options.getUser('user') as User : (await getGlobalUser(options!.args[0]));
 
-        if (!member) {
-            await message.reply(`:x: That user could not be found or is not a member of this server.`);
+        if (!user) {
+            await message.reply(`:x: That user could not be found.`);
             return;
         }
 
@@ -33,7 +33,7 @@ export default class CreateThreadCommand extends BaseCommand {
         if (message instanceof CommandInteraction)
             await message.deferReply();
 
-        const { channel, thread } = await createThread(client, null, member.user, message.member!.user as User);
+        const { channel, thread } = await createThread(client, null, user, message.member!.user as User);
 
         if (content) {
             await replyToThread(client, thread, {
@@ -48,8 +48,8 @@ export default class CreateThreadCommand extends BaseCommand {
             embeds: [
                 new EmbedBuilder({
                     author: {
-                        iconURL: member.user.displayAvatarURL(),
-                        name: member.user.tag
+                        iconURL: user.displayAvatarURL(),
+                        name: user.tag
                     },
                     color: 0x007bff,
                     description: `A thread channel ${channel!.toString()} has been created${content ? ' with the given initial message' : ''}.`,
@@ -60,7 +60,7 @@ export default class CreateThreadCommand extends BaseCommand {
                         },
                         {
                             name: 'User ID',
-                            value: member.user.id
+                            value: user.id
                         },
                     ],
                     footer: {
