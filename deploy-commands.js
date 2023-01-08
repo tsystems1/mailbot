@@ -96,7 +96,15 @@ const slashCommands = [
         .setDescription('Echo a message using the bot')
         .setDMPermission(false)
         .addStringOption(opt => opt.setName('content').setDescription('The message content').setRequired(true))
-        .addChannelOption(opt => opt.setName('channel').setDescription('Specify a channel where the message will be sent; defaults to current channel'))
+        .addChannelOption(opt => opt.setName('channel').setDescription('Specify a channel where the message will be sent; defaults to current channel')),
+    new SlashCommandBuilder()
+        .setName('system')
+        .setDescription('Show the system status')
+        .setDMPermission(false),
+    new SlashCommandBuilder()
+        .setName('restart')
+        .setDescription('Restart the system')
+        .setDMPermission(false)
 ];
 
 const contextMenuCommands = [

@@ -22,6 +22,7 @@ import DiscordClient from '../../client/Client';
 import CommandOptions from '../../types/CommandOptions';
 
 export default abstract class BaseCommand {
+    public readonly ownerOnly: boolean = false;
     public readonly mailOnly: boolean = false;
     public readonly legacy: boolean = true;
     public readonly interactions: boolean = true;
@@ -75,7 +76,7 @@ export default abstract class BaseCommand {
                 member = await message.guild!.members.fetch(message.member!.user.id);
             }
 
-            for await (const role of [...this.roles, client.config.role]) {
+            for await (const role of this.roles) {
                 if (!member.roles.cache.has(role instanceof Role ? role.id : role)) {
                     await message.reply({
                         embeds: [
@@ -89,6 +90,34 @@ export default abstract class BaseCommand {
                     return;
                 }
             }
+
+            if (!member.roles.cache.find(r => client.config.roles.includes(r.id))) {
+                console.log("Role issue");
+                
+                await message.reply({
+                    embeds: [
+                        {
+                            description: ':x: You don\'t have permission to run this command.',
+                            color: 0xf14a60
+                        }
+                    ]
+                });
+
+                return;
+            }
+        }
+        
+        if (this.ownerOnly && (message.member! as GuildMember).roles.cache.find(r => client.config.owners.includes(r.id))) {
+            await message.reply({
+                embeds: [
+                    {
+                        description: ':x: Only the bot owner(s) can run this command.',
+                        color: 0xf14a60
+                    }
+                ]
+            });
+
+            return;
         }
 
         if (this.permissions) {

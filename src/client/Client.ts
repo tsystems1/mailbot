@@ -30,7 +30,8 @@ export interface Config {
     logging_channel: string;
     mail_category: string;
     max_files: number;
-    role: string;
+    roles: string[];
+    owners: string[];
 }
 
 export default class DiscordClient extends Client<true> {
@@ -49,12 +50,12 @@ export default class DiscordClient extends Client<true> {
             .then(() => console.log('Database connected'))
             .catch(console.error);
         
-        this.config = <Config> JSON.parse(readFileSync(path.resolve(__dirname, '..', '..', 'config', 'config.json')).toString());
+        this.config = <Config> JSON.parse(readFileSync(path.resolve(__dirname, '..', '..', process.env.CONF_DIR ?? 'config', 'config.json')).toString());
         this.server = new Server(this);
 
         this.server.run();
     }
-
+    
     async database(uri: string) {
         return await mongoose.connect(uri);
     }
