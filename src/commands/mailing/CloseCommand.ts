@@ -103,10 +103,10 @@ export async function closeThread(client: DiscordClient, channel: string, closed
 
     try {
         if (dm && user) {
-            const member = await getGuild(client)?.members.fetch(user.id);
+            const userInner = await client.users.fetch(user.id);
 
-            if (member) {
-                await member.send({
+            if (userInner) {
+                await userInner.send({
                     embeds: [
                         new EmbedBuilder({
                             author: {

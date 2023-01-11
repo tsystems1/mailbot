@@ -42,7 +42,7 @@ export async function deleteThreadMessage(client: DiscordClient, thread: IThread
     }
 
     try {
-        const user = await (getGuild(client)?.members.fetch(thread.user));
+        const user = await client.users.fetch(thread.user);
 
         if (!user) {
             return;
@@ -137,7 +137,7 @@ export async function deleteThreadMessage(client: DiscordClient, thread: IThread
                             },
                             {
                                 name: 'Was previously sent to',
-                                value: user!.user.tag + ` (${user!.user.id})`
+                                value: user!.tag + ` (${user!.id})`
                             },
                         ],
                         footer: {

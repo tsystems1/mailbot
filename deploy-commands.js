@@ -81,14 +81,14 @@ const slashCommands = [
         .setName('thread')
         .setDescription('Create a new thread conversation')
         .setDMPermission(false)
-        .addUserOption(opt => opt.setName('member').setDescription('The thread will be created for the given member').setRequired(true))
-        .addStringOption(opt => opt.setName('initial_message').setDescription('Send a message to the member after thread creation'))
+        .addUserOption(opt => opt.setName('user').setDescription('The thread will be created for the given member').setRequired(true))
+        .addStringOption(opt => opt.setName('initial_message').setDescription('Send a message to the member afyer thread creation'))
         .addBooleanOption(opt => opt.setName('anonymous').setDescription('Specify that the message should be anonymous; default is True')),
     new SlashCommandBuilder()
         .setName('send')
         .setDescription('Send a message to a member; the system will create a thread if required')
         .setDMPermission(false)
-        .addUserOption(opt => opt.setName('member').setDescription('The message will be sent to the given member').setRequired(true))
+        .addUserOption(opt => opt.setName('user').setDescription('The message will be sent to the given member').setRequired(true))
         .addStringOption(opt => opt.setName('message').setDescription('The message content').setRequired(true))
         .addBooleanOption(opt => opt.setName('anonymous').setDescription('Specify that the message should be anonymous; default is True')),
     new SlashCommandBuilder()

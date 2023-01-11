@@ -23,7 +23,7 @@ import Client from "../../client/Client";
 import BlockedUser from "../../models/BlockedUser";
 import CommandOptions from "../../types/CommandOptions";
 import BaseCommand from "../../utils/structures/BaseCommand";
-import { getGuild, getUser, loggingChannel } from "../../utils/utils";
+import { getGlobalUser, getGuild, getUser, loggingChannel } from "../../utils/utils";
 
 export default class BlockCommand extends BaseCommand {
     requireModRole = true;
@@ -46,23 +46,23 @@ export default class BlockCommand extends BaseCommand {
             return;
         }
 
-        let member: GuildMember | undefined;
+        let user: User | undefined;
         let reason: string | undefined;
         const notify = message instanceof Message ? (options?.options["-n"] ?? options?.options["--notify"] ?? false) : (message.options.getBoolean('notify') ?? false);
 
         if (options) {
-            member = await getUser(options.args[0]);
+            user = await getGlobalUser(options.args[0]);
         }
         else if (message instanceof CommandInteraction) {
-            member = message.options.getMember('user')! as GuildMember;
+            user = message.options.getUser('user')! as User;
             reason = message.options.getString('reason') ?? undefined;
         }
 
-        if (!member || member.user.bot) {
+        if (!user || user.bot) {
             await message.reply({
                 embeds: [
                     {
-                        description: ':x: Invalid member specified.' + (member?.user.bot ? ' You cannot do that with a Bot user.' : ''),
+                        description: ':x: Invalid member specified.' + (user?.bot ? ' You cannot do that with a Bot user.' : ''),
                         color: 0xf14a60
                     }
                 ]
@@ -71,7 +71,7 @@ export default class BlockCommand extends BaseCommand {
             return;
         }
 
-        const blockedUser = await BlockedUser.findOne({ discordID: member.id });
+        const blockedUser = await BlockedUser.findOne({ discordID: user.id });
 
         if (blockedUser) {
             await message.reply({
@@ -88,21 +88,21 @@ export default class BlockCommand extends BaseCommand {
 
         await BlockedUser.create({
             createdAt: new Date(),
-            discordID: member.id
+            discordID: user.id
         });
 
         await loggingChannel(client).send({
             embeds: [
                 new EmbedBuilder({
                     author: {
-                        name: member.user.tag,
-                        iconURL: member.user.displayAvatarURL()
+                        name: user.tag,
+                        iconURL: user.displayAvatarURL()
                     },
                     title: "User blocked",
                     fields: [
                         {
                             name: "User ID",
-                            value: member.id,
+                            value: user.id,
                         },
                         {
                             name: "Blocked By",
@@ -124,7 +124,7 @@ export default class BlockCommand extends BaseCommand {
 
         if (notify) {
             try {
-                await member.send({
+                await user.send({
                     embeds: [
                         new EmbedBuilder({
                             author: {
@@ -157,8 +157,8 @@ export default class BlockCommand extends BaseCommand {
             embeds: [
                 new EmbedBuilder({
                     author: {
-                        name: member.user.tag,
-                        icon_url: member.user.displayAvatarURL(),
+                        name: user.tag,
+                        icon_url: user.displayAvatarURL(),
                     },
                     description: 'This user was blocked. They will not be able to communicate with MailBot until you unblock them.',
                     fields: reason ? [
