@@ -82,7 +82,7 @@ const slashCommands = [
         .setDescription('Create a new thread conversation')
         .setDMPermission(false)
         .addUserOption(opt => opt.setName('user').setDescription('The thread will be created for the given member').setRequired(true))
-        .addStringOption(opt => opt.setName('initial_message').setDescription('Send a message to the member afyer thread creation'))
+        .addStringOption(opt => opt.setName('initial_message').setDescription('Send a message to the member after thread creation'))
         .addBooleanOption(opt => opt.setName('anonymous').setDescription('Specify that the message should be anonymous; default is True')),
     new SlashCommandBuilder()
         .setName('send')
