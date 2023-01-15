@@ -20,7 +20,7 @@ export default class SendMessageCommand extends BaseCommand {
             return;
         }
 
-        const user = message instanceof CommandInteraction ? message.options.getUser('user') as User : (await getGlobalUser(options!.args[0]));
+        const user = message instanceof ChatInputCommandInteraction ? message.options.getUser('user', true) as User : (await getGlobalUser(options!.args[0]));
 
         if (!user) {
             await message.reply(`:x: That user could not be found or is not a member of this server.`);
@@ -31,7 +31,7 @@ export default class SendMessageCommand extends BaseCommand {
             message.content.slice(client.prefix.length).trim().slice(options!.rawArgv[0].length).trim().slice(options!.args[0].length).trim()
         );
 
-        if (message instanceof CommandInteraction)
+        if (message instanceof ChatInputCommandInteraction)
             await message.deferReply();
 
         let thread = await Thread.findOne({

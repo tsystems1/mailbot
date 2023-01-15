@@ -19,7 +19,7 @@ export default class CreateThreadCommand extends BaseCommand {
             return;
         }
 
-        const user = message instanceof CommandInteraction ? message.options.getUser('user') as User : (await getGlobalUser(options!.args[0]));
+        const user = message instanceof ChatInputCommandInteraction ? message.options.getUser('user', true) as User : (await getGlobalUser(options!.args[0]));
 
         if (!user) {
             await message.reply(`:x: That user could not be found.`);
@@ -30,7 +30,7 @@ export default class CreateThreadCommand extends BaseCommand {
             options!.args.length < 2 ? undefined : message.content.slice(client.prefix.length).trim().slice(options!.rawArgv[0].length).trim().slice(options!.args[0].length).trim()
         );
 
-        if (message instanceof CommandInteraction)
+        if (message instanceof ChatInputCommandInteraction)
             await message.deferReply();
 
         const { channel, thread } = await createThread(client, null, user, message.member!.user as User);
