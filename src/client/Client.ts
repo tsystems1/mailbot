@@ -41,6 +41,9 @@ export default class DiscordClient extends Client<true> {
 
     server: Server;
 
+    typingInterval: NodeJS.Timer | null = null;
+    typingTimeOut: NodeJS.Timeout | null = null; 
+
     public static client: DiscordClient;
     
     constructor(options: ClientOptions) {
