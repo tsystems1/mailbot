@@ -32,7 +32,7 @@ export default abstract class BaseCommand {
     public readonly requireModRole: boolean = true;
     public readonly permissions: PermissionsBitField | null = null;
 
-    constructor(private name: string, private category: string, private aliases: Array<string>) {
+    constructor(protected name: string, protected category: string, protected aliases: Array<string>) {
         
     }
 

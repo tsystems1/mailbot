@@ -104,6 +104,20 @@ const slashCommands = [
     new SlashCommandBuilder()
         .setName('restart')
         .setDescription('Restart the system')
+        .setDMPermission(false),
+    new SlashCommandBuilder()
+        .setName('snippet')
+        .setDescription('Manage the mail snippets')
+        .addSubcommand(subcommand => 
+            subcommand.setName('create').setDescription("Create a new mail snippet")
+                .addStringOption(option => option.setName('name').setDescription('Snippet name').setRequired(true))
+                .addStringOption(option => option.setName('content').setDescription('Snippet message content').setRequired(true))
+                .addBooleanOption(option => option.setName('anonymous').setDescription('Specify if the bot should send this snippet message anonymously. Default is True'))
+        )
+        .addSubcommand(subcommand => 
+            subcommand.setName('use').setDescription("Use a mail snippet")
+                .addStringOption(option => option.setName('name').setDescription('Snippet name').setRequired(true))
+        )
         .setDMPermission(false)
 ];
 
