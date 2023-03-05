@@ -31,7 +31,8 @@ export default class SnippetCommand extends BaseCommand {
             return;
         }
 
-        options!.args.shift();
+        if (options)
+            options.args.shift();
 
         await command.execute(client, message, options);
     }
