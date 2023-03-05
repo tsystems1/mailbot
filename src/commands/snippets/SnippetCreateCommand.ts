@@ -25,7 +25,7 @@ export default class SnippetCreateCommand extends BaseCommand {
         }
 
         const name = message instanceof Message ? options!.args.shift()! : message.options.getString('name', true);
-        const content = message instanceof Message ? message.content.slice(client.config.prefix.length).trim().slice(options!.commandName.length).trim().slice("create".length).trim().slice(name.length).trim() : message.options.getString('name', true);
+        const content = message instanceof Message ? message.content.slice(client.config.prefix.length).trim().slice(options!.commandName.length).trim().slice("create".length).trim().slice(name.length).trim() : message.options.getString('content', true);
         const anonymous = message instanceof ChatInputCommandInteraction ? message.options.getBoolean('anonymous') ?? true : true;
 
         await Snippet.create({
