@@ -9,3 +9,7 @@ src/server.ts
 build/
 database/
 tmp/
+.svn/
+CVS/
+CVSROOT/
+.cvsignore
