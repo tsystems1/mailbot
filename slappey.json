@@ -1,7 +1,0 @@
-{
-  "name": "mailbot",
-  "language": "typescript",
-  "manager": "yarn",
-  "token": "1234",
-  "prefix": "="
-}

@@ -1,15 +1,6 @@
-.env
-node_modules/
-src/commands/test/
-.vscode/
-.idea/
-config/config.json
-src/server.ts
-.devcontainer/
+# https://dart.dev/guides/libraries/private-files
+# Created by `dart pub`
+.dart_tool/
+/.env
+*.lock
 build/
-database/
-tmp/
-.svn/
-CVS/
-CVSROOT/
-.cvsignore
