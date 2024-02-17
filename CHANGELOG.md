@@ -1,3 +1,12 @@
+# [4.1.0](https://github.com/onesoft-sudo/mailbot/compare/v4.0.0...v4.1.0) (2024-02-17)
+
+
+### Features
+
+* basic command system ([5577223](https://github.com/onesoft-sudo/mailbot/commit/5577223ea74cb454b4daf96b7e64e680e7eb66d9))
+
+
+
 # [4.0.0](https://github.com/onesoft-sudo/mailbot/compare/v3.2.2...v4.0.0) (2024-02-17)
 
 
@@ -92,10 +101,6 @@
 * **models:** add corresponding interfaces for type hinting ([943776f](https://github.com/onesoft-sudo/mailbot/commit/943776f080a0834582a148b092027ac08db315d6))
 * send DMs on the thread channel ([be52e60](https://github.com/onesoft-sudo/mailbot/commit/be52e60c5ee803e03bf9744c854e46ce55f88ef3))
 * **utils:** add getGuild function ([41c6ce3](https://github.com/onesoft-sudo/mailbot/commit/41c6ce32da55e562ff64ca308c311d6b8f5cc1b3))
-
-
-
-## [3.2.1](https://github.com/onesoft-sudo/mailbot/compare/v3.2.0...v3.2.1) (2022-04-25)
 
 
 
