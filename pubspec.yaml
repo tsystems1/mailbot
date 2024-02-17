@@ -1,15 +1,22 @@
 name: mailbot
-description: A sample command-line application.
+description: A Discord Bot for communication between server staff and members.
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/onesoft-sudo/mailbot
 
 environment:
   sdk: ^3.3.0
 
 # Add regular dependencies here.
 dependencies:
-  # path: ^1.8.0
+  dotenv: ^4.2.0
+  drift: ^2.15.0
+  drift_postgres: ^1.1.0
+  logging: ^1.2.0
+  nyxx: ^6.1.0
+  nyxx_extensions: ^4.1.0
 
 dev_dependencies:
+  drift_dev: ^2.15.0
+  build_runner: ^2.4.8
   lints: ^3.0.0
   test: ^1.24.0
